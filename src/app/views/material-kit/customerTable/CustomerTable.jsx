@@ -17,7 +17,8 @@ import {
     Checkbox,
     Select,
     Box,
-    InputAdornment
+    InputAdornment,
+    Chip
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
@@ -59,17 +60,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Span } from 'app/components/Typography';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { Fullscreen } from '@mui/icons-material';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateField } from '@mui/x-date-pickers/DateField';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -131,252 +122,16 @@ const TextField = styled(TextValidator)(() => ({
     marginBottom: '16px'
 }));
 
-const subscribarList = [
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    },
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    },
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    },
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    },
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    },
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    },
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    }
-];
-
 export default function PaginationTable() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-    const [seletedCustomer, setSelectedCusomer] = useState({});
-    const [customers, setCustomers] = useState({});
+    const [seletedCustomer, setSelectedCusomer] = useState(null);
+    const [customers, setCustomers] = useState([]);
     const [newCustomer, setNewCustomer] = useState({
         email: '',
-        password: '',
-        confirmPassword: '',
         active: true,
         firstName: '',
         middleName: '',
@@ -420,6 +175,36 @@ export default function PaginationTable() {
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
+    const cleanNewCustomer = () =>
+        setNewCustomer({
+            email: '',
+            active: true,
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            nickName: '',
+            birthday: '',
+            accounts: '',
+            orders: '',
+            referrals: '',
+            language: 'en',
+            phone: '',
+            externalID1: '',
+            externalID2: '',
+            status: 'allow',
+            agreementSigned: false,
+            agreementID: '',
+            agreementIP: '',
+            agreementLegalName: '',
+            agreementTs: '',
+            country: '',
+            state: '',
+            city: '',
+            zip: '',
+            addressLine1: '',
+            addressLine2: '',
+            addressLine3: ''
+        });
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
@@ -429,10 +214,9 @@ export default function PaginationTable() {
 
     // To validation wether password same as confirmPassword, uncommit this useEffect function
     useEffect(() => {
-        console.log('-----------------');
-        ValidatorForm.addValidationRule('isPasswordStrong', (value) => {
-            return value.length >= 8 && /\d/.test(value) && /[a-zA-Z]/.test(value);
-        });
+        // ValidatorForm.addValidationRule('isPasswordStrong', (value) => {
+        //     return value.length >= 8 && /\d/.test(value) && /[a-zA-Z]/.test(value);
+        // });
 
         // Password match validator
         ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
@@ -440,10 +224,10 @@ export default function PaginationTable() {
         });
 
         return () => {
-            ValidatorForm.removeValidationRule('isPasswordStrong');
+            // ValidatorForm.removeValidationRule('isPasswordStrong');
             ValidatorForm.removeValidationRule('isPasswordMatch');
         };
-    }, [newCustomer.password]);
+    }, [seletedCustomer?.password]);
 
     useEffect(() => {
         fetchCustomer();
@@ -465,6 +249,7 @@ export default function PaginationTable() {
         setSnackbarOpen(false);
     };
 
+    //CRUD OPS
     const fetchCustomer = () => {
         axios
             .get('/getCustomers', {
@@ -475,12 +260,14 @@ export default function PaginationTable() {
             .then((res) => {
                 setCustomers(res.data.customers);
                 showSnackbar(res.data.message, 'success');
+                console.log(customers);
             })
             .catch((error) => {
                 // Handle errors
                 console.error('There was an error making the GET request!', error);
             });
     };
+
     const handleChangePage = (_, newPage) => {
         setPage(newPage);
     };
@@ -491,8 +278,58 @@ export default function PaginationTable() {
     };
 
     //form OPs
-    const handleSubmit = (event) => {
-        console.log(newCustomer);
+    const handleSubmit = () => {
+        axios
+            .post('/createCustomer', newCustomer, {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                cleanNewCustomer();
+                showSnackbar(res.data.messages, 'success');
+            })
+            .catch((error) => {
+                return;
+            });
+    };
+    const handleSubmitEdit = () => {
+        axios
+            .post(
+                '/updateCustomer',
+                { ...seletedCustomer, customerId: seletedCustomer.id },
+                {
+                    headers: {
+                        Authorization: token
+                    }
+                }
+            )
+            .then((res) => {
+                fetchCustomer();
+                showSnackbar(res.data.messages, 'success');
+            })
+            .catch((error) => {
+                return;
+            });
+    };
+    const handleDelete = (id) => {
+        axios
+            .post(
+                '/deleteCustomer',
+                { customerId: id },
+                {
+                    headers: {
+                        Authorization: token
+                    }
+                }
+            )
+            .then((res) => {
+                fetchCustomer();
+                showSnackbar(res.data.messages, 'success');
+            })
+            .catch((error) => {
+                return;
+            });
     };
 
     const handleChange = (event) => {
@@ -503,6 +340,28 @@ export default function PaginationTable() {
             return;
         }
         setNewCustomer({ ...newCustomer, [event.target.name]: event.target.value });
+    };
+    const handleChangeEdit = (event) => {
+        // event.persist();
+        if (event.target.name === 'active' || event.target.name === 'agreementSigned') {
+            setSelectedCusomer({ ...seletedCustomer, [event.target.name]: event.target.checked });
+            return;
+        }
+        setSelectedCusomer({ ...seletedCustomer, [event.target.name]: event.target.value });
+    };
+
+    const formatDate = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toISOString().split('T')[0];
+    };
+
+    const formatDateFiled = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so +1
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
 
     const handleDateChange = (birthday) => setNewCustomer({ ...newCustomer, birthday });
@@ -521,6 +380,9 @@ export default function PaginationTable() {
                             </TableCell>
                             <TableCell align="left" sx={{ width: '80px' }}>
                                 First &nbsp; Name
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '80px' }}>
+                                Middle &nbsp; Name
                             </TableCell>
                             <TableCell align="left" sx={{ width: '80px' }}>
                                 Last &nbsp; Name
@@ -623,44 +485,64 @@ export default function PaginationTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {subscribarList
+                        {customers
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((subscriber, index) => (
+                            .map((customer, index) => (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                    <TableCell align="center">{subscriber.email}</TableCell>
-                                    <TableCell align="center">{subscriber.FName}</TableCell>
-                                    <TableCell align="center">{subscriber.LName}</TableCell>
-                                    <TableCell align="center">{subscriber.NName}</TableCell>
-                                    <TableCell align="center">{subscriber.birth}</TableCell>
-                                    <TableCell align="center">{subscriber.accounts}</TableCell>
-                                    <TableCell align="center">{subscriber.orders}</TableCell>
-                                    <TableCell align="center">{subscriber.referrals}</TableCell>
-                                    <TableCell align="center">{subscriber.lang}</TableCell>
-                                    <TableCell align="center">{subscriber.phone}</TableCell>
-                                    <TableCell align="center">{subscriber.Ext_id1}</TableCell>
-                                    <TableCell align="center">{subscriber.Ext_id2}</TableCell>
-                                    <TableCell align="center">{subscriber.status}</TableCell>
+                                    <TableCell align="center">{customer.email}</TableCell>
+                                    <TableCell align="center">{customer.firstName}</TableCell>
+                                    <TableCell align="center">{customer.middleName}</TableCell>
+                                    <TableCell align="center">{customer.lastName}</TableCell>
+                                    <TableCell align="center">{customer.nickName}</TableCell>
                                     <TableCell align="center">
-                                        {subscriber.agreementSigned}
+                                        {formatDate(customer.birthday)}
                                     </TableCell>
-                                    <TableCell align="center">{subscriber.agreementId}</TableCell>
-                                    <TableCell align="center">{subscriber.agreementIP}</TableCell>
+                                    <TableCell align="center">{customer.accounts}</TableCell>
+                                    <TableCell align="center">{customer.orders}</TableCell>
+                                    <TableCell align="center">{customer.referrals}</TableCell>
+                                    <TableCell align="center">{customer.language}</TableCell>
+                                    <TableCell align="center">{customer.phone}</TableCell>
+                                    <TableCell align="center">{customer.externalID1}</TableCell>
+                                    <TableCell align="center">{customer.externalID2}</TableCell>
                                     <TableCell align="center">
-                                        {subscriber.agreementLegalName}
+                                        <Chip
+                                            label={customer.status}
+                                            color="success"
+                                            variant="outlined"
+                                        />
                                     </TableCell>
-                                    <TableCell align="center">{subscriber.agreementTs}</TableCell>
-                                    <TableCell align="center">{subscriber.created}</TableCell>
-                                    <TableCell align="center">{subscriber.lastUpdate}</TableCell>
-                                    <TableCell align="center">{subscriber.active}</TableCell>
+                                    <TableCell align="center">
+                                        {' '}
+                                        <Checkbox checked={customer.agreementSigned} />
+                                    </TableCell>
+                                    <TableCell align="center">{customer.agreementId}</TableCell>
+                                    <TableCell align="center">{customer.agreementIP}</TableCell>
+                                    <TableCell align="center">
+                                        {customer.agreementLegalName}
+                                    </TableCell>
+                                    <TableCell align="center">{customer.agreementTs}</TableCell>
+                                    <TableCell align="center">
+                                        {formatDate(customer.createdAt)}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {formatDate(customer.updatedAt)}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Radio
+                                            checked={customer.active}
+                                            name="radio-buttons"
+                                            inputProps={{ 'aria-label': 'A' }}
+                                        />
+                                    </TableCell>
                                     <TableCell align="center" sx={{ fontSize: 12 }}>
-                                        {subscriber.country}
+                                        {customer.country}
                                     </TableCell>
-                                    <TableCell align="center">{subscriber.state}</TableCell>
-                                    <TableCell align="center">{subscriber.city}</TableCell>
-                                    <TableCell align="center">{subscriber.zip}</TableCell>
-                                    <TableCell align="center">{subscriber.Add1}</TableCell>
-                                    <TableCell align="center">{subscriber.Add2}</TableCell>
-                                    <TableCell align="center">{subscriber.Add3}</TableCell>
+                                    <TableCell align="center">{customer.state}</TableCell>
+                                    <TableCell align="center">{customer.city}</TableCell>
+                                    <TableCell align="center">{customer.zip}</TableCell>
+                                    <TableCell align="center">{customer.addressLine1}</TableCell>
+                                    <TableCell align="center">{customer.addressLine2}</TableCell>
+                                    <TableCell align="center">{customer.addressLine3}</TableCell>
 
                                     <TableCell
                                         sx={{
@@ -698,6 +580,11 @@ export default function PaginationTable() {
                                             <MenuItem
                                                 onClick={() => {
                                                     handleClose();
+                                                    setSelectedCusomer({
+                                                        ...customer,
+                                                        password: ''
+                                                    });
+                                                    console.log(seletedCustomer);
                                                     setEditOpen(true);
                                                 }}
                                                 disableRipple
@@ -759,6 +646,7 @@ export default function PaginationTable() {
                                             <Divider sx={{ my: 0.5 }} />
                                             <MenuItem
                                                 onClick={() => {
+                                                    setSelectedCusomer(customer);
                                                     handleClose();
                                                     setRemoveOpen(true);
                                                 }}
@@ -872,22 +760,31 @@ export default function PaginationTable() {
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle id="alert-dialog-slide-title">
-                    Use Google's location service?
-                </DialogTitle>
+                <DialogTitle id="alert-dialog-slide-title">Delete account</DialogTitle>
 
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        this is account remove
+                        Are you sure to delete accunt?
                     </DialogContentText>
                 </DialogContent>
 
                 <DialogActions>
-                    <Button onClick={() => setRemoveOpen(false)} color="primary">
+                    <Button
+                        onClick={() => {
+                            setRemoveOpen(false);
+                        }}
+                        color="primary"
+                    >
                         Disagree
                     </Button>
 
-                    <Button onClick={() => setRemoveOpen(false)} color="primary">
+                    <Button
+                        onClick={() => {
+                            handleDelete(seletedCustomer.id);
+                            setRemoveOpen(false);
+                        }}
+                        color="primary"
+                    >
                         Agree
                     </Button>
                 </DialogActions>
@@ -898,7 +795,10 @@ export default function PaginationTable() {
             <Dialog
                 fullWidth
                 open={openCreate}
-                onClose={() => setCreateOpen(false)}
+                onClose={() => {
+                    cleanNewCustomer();
+                    setCreateOpen(false);
+                }}
                 aria-labelledby="form-dialog-title"
                 minWidth={700} // Disable automatic resizing
             >
@@ -923,49 +823,7 @@ export default function PaginationTable() {
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
                         />
-                        {/* <Box display="flex" justifyContent="space-between">
-                            <TextField
-                                autoFocus
-                                type={showPassword ? 'text' : 'password'}
-                                margin="dense"
-                                label="Password"
-                                value={newCustomer.password || ''}
-                                onChange={handleChange}
-                                name="password"
-                                validators={['required', 'isPasswordStrong']}
-                                errorMessages={[
-                                    'this field is required',
-                                    'Password must be minimum 8 characters, including letters and numbers'
-                                ]}
-                                style={{ marginRight: '4px', flex: 1 }}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }}
-                            />
-                            <TextField
-                                autoFocus
-                                type="text"
-                                margin="dense"
-                                label="Confirm Password"
-                                value={newCustomer?.confirmPassword || ''}
-                                onChange={handleChange}
-                                name="confirmPassword"
-                                validators={['required', 'isPasswordMatch']}
-                                errorMessages={['this field is required', 'Passwords do not match']}
-                                style={{ flex: 1 }}
-                            />
-                        </Box> */}
+
                         <FormControlLabel
                             control={
                                 <Switch
@@ -1268,6 +1126,7 @@ export default function PaginationTable() {
                         variant="outlined"
                         color="secondary"
                         onClick={() => {
+                            cleanNewCustomer();
                             setCreateOpen(false);
                         }}
                     >
@@ -1278,7 +1137,11 @@ export default function PaginationTable() {
                         color="primary"
                         variant="contained"
                         type="submit"
-                        onClick={() => formRef.current.submit()}
+                        onClick={() => {
+                            formRef.current.submit();
+                            cleanNewCustomer();
+                            setCreateOpen(false);
+                        }}
                     >
                         <Icon>send</Icon>
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
@@ -1294,13 +1157,12 @@ export default function PaginationTable() {
                 aria-labelledby="form-dialog-title"
                 minWidth={700} // Disable automatic resizing
             >
-                <DialogTitle id="form-dialog-title">Create new customer</DialogTitle>
+                <DialogTitle id="form-dialog-title">Edit customer</DialogTitle>
 
                 <DialogContent>
-                    <DialogContentText sx={{ color: 'white' }}></DialogContentText>
                     <ValidatorForm
                         ref={formRef} // Attach the ref to ValidatorForm
-                        onSubmit={handleSubmit}
+                        onSubmit={handleSubmitEdit}
                         onError={() => null}
                     >
                         <TextField
@@ -1309,11 +1171,39 @@ export default function PaginationTable() {
                             type="email"
                             margin="dense"
                             label="Email Address"
-                            value={newCustomer.email || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.email || ''}
+                            onChange={handleChangeEdit}
                             name="email"
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
+                        />
+                        <TextField
+                            autoFocus
+                            type={showPassword ? 'text' : 'password'}
+                            margin="dense"
+                            label="Password"
+                            value={seletedCustomer?.password || ''}
+                            onChange={handleChangeEdit}
+                            name="password"
+                            // validators={['isPasswordStrong']}
+                            errorMessages={[
+                                'Password must be minimum 8 characters, including letters and numbers'
+                            ]}
+                            style={{ marginRight: '4px', flex: 1 }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
                         />
                         {/* <Box display="flex" justifyContent="space-between">
                             <TextField
@@ -1322,7 +1212,7 @@ export default function PaginationTable() {
                                 margin="dense"
                                 label="Password"
                                 value={newCustomer.password || ''}
-                                onChange={handleChange}
+                                onChange={handleChangeEdit}
                                 name="password"
                                 validators={['required', 'isPasswordStrong']}
                                 errorMessages={[
@@ -1351,7 +1241,7 @@ export default function PaginationTable() {
                                 margin="dense"
                                 label="Confirm Password"
                                 value={newCustomer?.confirmPassword || ''}
-                                onChange={handleChange}
+                                onChange={handleChangeEdit}
                                 name="confirmPassword"
                                 validators={['required', 'isPasswordMatch']}
                                 errorMessages={['this field is required', 'Passwords do not match']}
@@ -1361,8 +1251,8 @@ export default function PaginationTable() {
                         <FormControlLabel
                             control={
                                 <Switch
-                                    checked={newCustomer.active}
-                                    onChange={handleChange}
+                                    checked={seletedCustomer?.active}
+                                    onChange={handleChangeEdit}
                                     name="active"
                                 />
                             }
@@ -1373,8 +1263,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="First Name"
-                            value={newCustomer.firstName || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.firstName || ''}
+                            onChange={handleChangeEdit}
                             name="firstName"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1384,8 +1274,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Middle Name"
-                            value={newCustomer.middleName || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.middleName || ''}
+                            onChange={handleChangeEdit}
                             name="middleName"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1395,8 +1285,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Last Name"
-                            value={newCustomer.lastName || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.lastName || ''}
+                            onChange={handleChangeEdit}
                             name="lastName"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1406,8 +1296,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Nick Name"
-                            value={newCustomer.nickName || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.nickName || ''}
+                            onChange={handleChangeEdit}
                             name="nickName"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1415,9 +1305,9 @@ export default function PaginationTable() {
                         <TextField
                             id="birthday"
                             label="Birthday"
-                            value={newCustomer.birthday || ''}
+                            value={formatDateFiled(seletedCustomer?.birthday)}
                             type="date"
-                            onChange={handleChange}
+                            onChange={handleChangeEdit}
                             fullWidth
                             InputLabelProps={{
                                 shrink: true
@@ -1432,8 +1322,8 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="Accounts"
-                            value={newCustomer.accounts || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.accounts}
+                            onChange={handleChangeEdit}
                             name="accounts"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1443,8 +1333,8 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="Orders"
-                            value={newCustomer.orders || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.orders}
+                            onChange={handleChangeEdit}
                             name="orders"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1454,8 +1344,8 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="Referrals"
-                            value={newCustomer.referrals || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.referrals}
+                            onChange={handleChangeEdit}
                             name="referrals"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1464,8 +1354,8 @@ export default function PaginationTable() {
                             <InputLabel id="language-label">Language</InputLabel>
                             <Select
                                 labelId="language-label"
-                                value={newCustomer.language || ''}
-                                onChange={handleChange}
+                                value={seletedCustomer?.language || ''}
+                                onChange={handleChangeEdit}
                                 label="Language"
                             >
                                 <MenuItem value=""></MenuItem>
@@ -1478,8 +1368,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Phone"
-                            value={newCustomer.phone || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.phone || ''}
+                            onChange={handleChangeEdit}
                             name="phone"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1489,8 +1379,8 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="ExternalID1"
-                            value={newCustomer.externalID1 || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.externalID1 || ''}
+                            onChange={handleChangeEdit}
                             name="externalID1"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1500,8 +1390,8 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="ExternalID2"
-                            value={newCustomer.externalID2 || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.externalID2 || ''}
+                            onChange={handleChangeEdit}
                             name="externalID2"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1510,8 +1400,8 @@ export default function PaginationTable() {
                             <InputLabel id="language-label">Status</InputLabel>
                             <Select
                                 labelId="language-label"
-                                value={newCustomer.status || ''}
-                                onChange={handleChange}
+                                value={seletedCustomer?.status || ''}
+                                onChange={handleChangeEdit}
                                 label="Status"
                                 name="status"
                             >
@@ -1524,9 +1414,9 @@ export default function PaginationTable() {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    checked={newCustomer.agreementSigned}
+                                    checked={seletedCustomer?.agreementSigned}
                                     name="agreementSigned"
-                                    onChange={handleChange}
+                                    onChange={handleChangeEdit}
                                 />
                             }
                             label="AgreementSigned"
@@ -1536,8 +1426,8 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="AgreementID"
-                            value={newCustomer.agreementID || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.agreementID || ''}
+                            onChange={handleChangeEdit}
                             name="agreementID"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1547,8 +1437,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="text"
                             label="AgreementIP"
-                            value={newCustomer.agreementIP || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.agreementIP || ''}
+                            onChange={handleChangeEdit}
                             name="agreementIP"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1558,8 +1448,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AgreementLegalName"
-                            value={newCustomer.agreementLegalName || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.agreementLegalName || ''}
+                            onChange={handleChangeEdit}
                             name="agreementLegalName"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1569,8 +1459,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AgreementTs"
-                            value={newCustomer.agreementTs || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.agreementTs || ''}
+                            onChange={handleChangeEdit}
                             name="agreementTs"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1580,8 +1470,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Country"
-                            value={newCustomer.country || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.country || ''}
+                            onChange={handleChangeEdit}
                             name="country"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1591,8 +1481,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="State"
-                            value={newCustomer.state || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.state || ''}
+                            onChange={handleChangeEdit}
                             name="state"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1602,19 +1492,19 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="City"
-                            value={newCustomer.city || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.city || ''}
+                            onChange={handleChangeEdit}
                             name="city"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
                         <TextField
                             autoFocus
-                            type="number"
+                            type="text"
                             margin="dense"
                             label="Zip Code"
-                            value={newCustomer.zip || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.zip || ''}
+                            onChange={handleChangeEdit}
                             name="zip"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1624,8 +1514,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AddressLine1"
-                            value={newCustomer.addressLine1 || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.addressLine1 || ''}
+                            onChange={handleChangeEdit}
                             name="addressLine1"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1635,8 +1525,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AddressLine2"
-                            value={newCustomer.addressLine2 || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.addressLine2 || ''}
+                            onChange={handleChangeEdit}
                             name="addressLine2"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1646,8 +1536,8 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AddressLine3"
-                            value={newCustomer.addressLine3 || ''}
-                            onChange={handleChange}
+                            value={seletedCustomer?.addressLine3 || ''}
+                            onChange={handleChangeEdit}
                             name="addressLine3"
                             validators={['required']}
                             errorMessages={['this field is required']}
@@ -1705,7 +1595,7 @@ export default function PaginationTable() {
                 page={page}
                 component="div"
                 rowsPerPage={rowsPerPage}
-                count={subscribarList.length}
+                count={customers.length}
                 onPageChange={handleChangePage}
                 rowsPerPageOptions={[5, 10, 25]}
                 onRowsPerPageChange={handleChangeRowsPerPage}

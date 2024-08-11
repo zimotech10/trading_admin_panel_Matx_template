@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
             .post('/login', { email, password })
             .then((res) => {
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('isAuthenticated', res.data.state);
+
                 const { state } = res.data;
                 showSnackbar('logined succesfully!');
                 const user = { name: 'admin' };
