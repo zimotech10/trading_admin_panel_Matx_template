@@ -15,7 +15,8 @@ import {
     RadioGroup,
     Switch,
     Checkbox,
-    Select
+    Select,
+    Box
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
@@ -886,12 +887,38 @@ export default function PaginationTable() {
                             type="email"
                             margin="dense"
                             label="Email Address"
-                            value={''}
+                            value={newCustomer.email || ''}
                             onChange={handleChange}
                             name="email"
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
                         />
+                        <Box display="flex" justifyContent="space-between">
+                            <TextField
+                                autoFocus
+                                type="password"
+                                margin="dense"
+                                label="Password"
+                                value={''}
+                                onChange={handleChange}
+                                name="password"
+                                validators={['required']}
+                                errorMessages={['this field is required']}
+                                style={{ marginRight: '10px', flex: 1 }}
+                            />
+                            <TextField
+                                autoFocus
+                                type="text"
+                                margin="dense"
+                                label="Confirm Password"
+                                value={''}
+                                onChange={handleChange}
+                                name="confirmPassword"
+                                validators={['required']}
+                                errorMessages={['this field is required']}
+                                style={{ flex: 1 }}
+                            />
+                        </Box>
                         <FormControlLabel
                             control={
                                 <Switch
@@ -1055,6 +1082,127 @@ export default function PaginationTable() {
                         <FormControlLabel
                             control={<Checkbox onChange={handleChange} />}
                             label="AgreementSigned"
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="AgreementID"
+                            value={''}
+                            onChange={handleChange}
+                            name="agreementID"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="text"
+                            label="AgreementIP"
+                            value={''}
+                            onChange={handleChange}
+                            name="agreementIP"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AgreementLegalName"
+                            value={''}
+                            onChange={handleChange}
+                            name="agreementLegalName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AgreementTs"
+                            value={''}
+                            onChange={handleChange}
+                            name="agreementTs"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Country"
+                            value={''}
+                            onChange={handleChange}
+                            name="country"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="State"
+                            value={''}
+                            onChange={handleChange}
+                            name="state"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="City"
+                            value={''}
+                            onChange={handleChange}
+                            name="city"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Zip Code"
+                            value={''}
+                            onChange={handleChange}
+                            name="zip"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AddressLine1"
+                            value={''}
+                            onChange={handleChange}
+                            name="addressLine1"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AddressLine2"
+                            value={''}
+                            onChange={handleChange}
+                            name="addressLine2"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AddressLine3"
+                            value={''}
+                            onChange={handleChange}
+                            name="addressLine3"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
                         />
                     </ValidatorForm>
                 </DialogContent>
