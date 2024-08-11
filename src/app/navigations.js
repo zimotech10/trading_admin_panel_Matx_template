@@ -1,8 +1,8 @@
 export const navigations = [
     { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
-    { name: 'Customers', icon: 'security', path: '/material/customerTable', iconText: 'T' },
-    { name: 'Accounts', icon: 'favorite', path: '/material/accountTable', iconText: 'T' },
-    { name: 'Plans', icon: 'security', path: '/material/plansTable', iconText: 'T' },
+    { name: 'Customers', icon: 'people', path: '/material/customerTable', iconText: 'T' },
+    { name: 'Accounts', icon: 'contacts', path: '/material/accountTable', iconText: 'T' },
+    { name: 'Plans', icon: 'description', path: '/material/plansTable', iconText: 'T' },
     // { name: 'Table', icon: 'security', path: '/material/table', iconText: 'T' },
     // { name: 'Table', icon: 'security', path: '/material/table', iconText: 'T' }
     // { label: 'PAGES', type: 'label' },
