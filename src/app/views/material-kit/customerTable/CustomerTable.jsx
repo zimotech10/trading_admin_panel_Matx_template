@@ -1,4 +1,4 @@
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState, forwardRef, useRef } from 'react';
 import * as React from 'react';
 import {
     Icon,
@@ -16,7 +16,8 @@ import {
     Switch,
     Checkbox,
     Select,
-    Box
+    Box,
+    InputAdornment
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
@@ -56,6 +57,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 // import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -374,6 +376,7 @@ export default function PaginationTable() {
     const [newCustomer, setNewCustomer] = useState({
         email: '',
         password: '',
+        confirmPassword: '',
         active: true,
         firstName: '',
         middleName: '',
@@ -387,8 +390,9 @@ export default function PaginationTable() {
         phone: '',
         externalID1: '',
         externalID2: '',
-        status: '',
-        agreementSigned: true,
+        status: 'allow',
+        agreementSigned: false,
+        agreementID: '',
         agreementIP: '',
         agreementLegalName: '',
         agreementTs: '',
@@ -398,10 +402,9 @@ export default function PaginationTable() {
         zip: '',
         addressLine1: '',
         addressLine2: '',
-        addressLine3: '',
-        createdAt: '',
-        updateAt: ''
+        addressLine3: ''
     });
+    const formRef = useRef(null);
     const token = localStorage.getItem('token');
     const [anchorEl, setAnchorEl] = React.useState(null);
     // modal manipulatino states
@@ -412,8 +415,35 @@ export default function PaginationTable() {
     const [openEdit, setEditOpen] = useState(false);
     const [openView, setViewOpen] = useState(false);
     const [openCreate, setCreateOpen] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const handleCreateOpen = () => setCreateOpen(true);
+
+    // To validation wether password same as confirmPassword, uncommit this useEffect function
+    useEffect(() => {
+        console.log('-----------------');
+        ValidatorForm.addValidationRule('isPasswordStrong', (value) => {
+            return value.length >= 8 && /\d/.test(value) && /[a-zA-Z]/.test(value);
+        });
+
+        // Password match validator
+        ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
+            return value === newCustomer.password;
+        });
+
+        return () => {
+            ValidatorForm.removeValidationRule('isPasswordStrong');
+            ValidatorForm.removeValidationRule('isPasswordMatch');
+        };
+    }, [newCustomer.password]);
 
     useEffect(() => {
         fetchCustomer();
@@ -462,13 +492,12 @@ export default function PaginationTable() {
 
     //form OPs
     const handleSubmit = (event) => {
-        console.log('submitted');
-        console.log(event);
+        console.log(newCustomer);
     };
 
     const handleChange = (event) => {
-        event.persist();
-        if (event.target.name === 'active') {
+        // event.persist();
+        if (event.target.name === 'active' || event.target.name === 'agreementSigned') {
             setNewCustomer({ ...newCustomer, [event.target.name]: event.target.checked });
             console.log(newCustomer.active, event.target.checked);
             return;
@@ -872,15 +901,16 @@ export default function PaginationTable() {
                 onClose={() => setCreateOpen(false)}
                 aria-labelledby="form-dialog-title"
                 minWidth={700} // Disable automatic resizing
-                // sx={{
-                //     width: 700
-                // }}
             >
-                <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                <DialogTitle id="form-dialog-title">Create new customer</DialogTitle>
 
                 <DialogContent>
                     <DialogContentText sx={{ color: 'white' }}></DialogContentText>
-                    <ValidatorForm>
+                    <ValidatorForm
+                        ref={formRef} // Attach the ref to ValidatorForm
+                        onSubmit={handleSubmit}
+                        onError={() => null}
+                    >
                         <TextField
                             autoFocus
                             id="email"
@@ -893,32 +923,49 @@ export default function PaginationTable() {
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
                         />
-                        <Box display="flex" justifyContent="space-between">
+                        {/* <Box display="flex" justifyContent="space-between">
                             <TextField
                                 autoFocus
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 margin="dense"
                                 label="Password"
-                                value={''}
+                                value={newCustomer.password || ''}
                                 onChange={handleChange}
                                 name="password"
-                                validators={['required']}
-                                errorMessages={['this field is required']}
-                                style={{ marginRight: '10px', flex: 1 }}
+                                validators={['required', 'isPasswordStrong']}
+                                errorMessages={[
+                                    'this field is required',
+                                    'Password must be minimum 8 characters, including letters and numbers'
+                                ]}
+                                style={{ marginRight: '4px', flex: 1 }}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
                             />
                             <TextField
                                 autoFocus
                                 type="text"
                                 margin="dense"
                                 label="Confirm Password"
-                                value={''}
+                                value={newCustomer?.confirmPassword || ''}
                                 onChange={handleChange}
                                 name="confirmPassword"
-                                validators={['required']}
-                                errorMessages={['this field is required']}
+                                validators={['required', 'isPasswordMatch']}
+                                errorMessages={['this field is required', 'Passwords do not match']}
                                 style={{ flex: 1 }}
                             />
-                        </Box>
+                        </Box> */}
                         <FormControlLabel
                             control={
                                 <Switch
@@ -934,9 +981,9 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="First Name"
-                            value={''}
+                            value={newCustomer.firstName || ''}
                             onChange={handleChange}
-                            name="firtName"
+                            name="firstName"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
@@ -945,7 +992,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Middle Name"
-                            value={''}
+                            value={newCustomer.middleName || ''}
                             onChange={handleChange}
                             name="middleName"
                             validators={['required']}
@@ -956,7 +1003,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Last Name"
-                            value={''}
+                            value={newCustomer.lastName || ''}
                             onChange={handleChange}
                             name="lastName"
                             validators={['required']}
@@ -967,7 +1014,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Nick Name"
-                            value={''}
+                            value={newCustomer.nickName || ''}
                             onChange={handleChange}
                             name="nickName"
                             validators={['required']}
@@ -976,6 +1023,7 @@ export default function PaginationTable() {
                         <TextField
                             id="birthday"
                             label="Birthday"
+                            value={newCustomer.birthday || ''}
                             type="date"
                             onChange={handleChange}
                             fullWidth
@@ -992,7 +1040,7 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="Accounts"
-                            value={''}
+                            value={newCustomer.accounts || ''}
                             onChange={handleChange}
                             name="accounts"
                             validators={['required']}
@@ -1003,7 +1051,7 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="Orders"
-                            value={''}
+                            value={newCustomer.orders || ''}
                             onChange={handleChange}
                             name="orders"
                             validators={['required']}
@@ -1014,7 +1062,7 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="Referrals"
-                            value={''}
+                            value={newCustomer.referrals || ''}
                             onChange={handleChange}
                             name="referrals"
                             validators={['required']}
@@ -1024,10 +1072,11 @@ export default function PaginationTable() {
                             <InputLabel id="language-label">Language</InputLabel>
                             <Select
                                 labelId="language-label"
-                                value={''}
+                                value={newCustomer.language || ''}
                                 onChange={handleChange}
                                 label="Language"
                             >
+                                <MenuItem value=""></MenuItem>
                                 <MenuItem value={'en'}>English</MenuItem>
                                 <MenuItem value={'fr'}>French</MenuItem>
                             </Select>
@@ -1037,7 +1086,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Phone"
-                            value={''}
+                            value={newCustomer.phone || ''}
                             onChange={handleChange}
                             name="phone"
                             validators={['required']}
@@ -1048,7 +1097,7 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="ExternalID1"
-                            value={''}
+                            value={newCustomer.externalID1 || ''}
                             onChange={handleChange}
                             name="externalID1"
                             validators={['required']}
@@ -1059,7 +1108,7 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="ExternalID2"
-                            value={''}
+                            value={newCustomer.externalID2 || ''}
                             onChange={handleChange}
                             name="externalID2"
                             validators={['required']}
@@ -1069,18 +1118,25 @@ export default function PaginationTable() {
                             <InputLabel id="language-label">Status</InputLabel>
                             <Select
                                 labelId="language-label"
-                                value={newCustomer.status}
+                                value={newCustomer.status || ''}
                                 onChange={handleChange}
-                                label="Language"
+                                label="Status"
+                                name="status"
                             >
-                                <MenuItem value={'pending'}>Pending</MenuItem>
                                 <MenuItem value={'allow'}>Allow</MenuItem>
+                                <MenuItem value={'pending'}>Pending</MenuItem>
                                 <MenuItem value={'block'}>Block</MenuItem>
                             </Select>
                         </FormControl>
 
                         <FormControlLabel
-                            control={<Checkbox onChange={handleChange} />}
+                            control={
+                                <Checkbox
+                                    checked={newCustomer.agreementSigned}
+                                    name="agreementSigned"
+                                    onChange={handleChange}
+                                />
+                            }
                             label="AgreementSigned"
                         />
                         <TextField
@@ -1088,7 +1144,7 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="AgreementID"
-                            value={''}
+                            value={newCustomer.agreementID || ''}
                             onChange={handleChange}
                             name="agreementID"
                             validators={['required']}
@@ -1099,7 +1155,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="text"
                             label="AgreementIP"
-                            value={''}
+                            value={newCustomer.agreementIP || ''}
                             onChange={handleChange}
                             name="agreementIP"
                             validators={['required']}
@@ -1110,7 +1166,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AgreementLegalName"
-                            value={''}
+                            value={newCustomer.agreementLegalName || ''}
                             onChange={handleChange}
                             name="agreementLegalName"
                             validators={['required']}
@@ -1121,7 +1177,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AgreementTs"
-                            value={''}
+                            value={newCustomer.agreementTs || ''}
                             onChange={handleChange}
                             name="agreementTs"
                             validators={['required']}
@@ -1132,7 +1188,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Country"
-                            value={''}
+                            value={newCustomer.country || ''}
                             onChange={handleChange}
                             name="country"
                             validators={['required']}
@@ -1143,7 +1199,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="State"
-                            value={''}
+                            value={newCustomer.state || ''}
                             onChange={handleChange}
                             name="state"
                             validators={['required']}
@@ -1154,7 +1210,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="City"
-                            value={''}
+                            value={newCustomer.city || ''}
                             onChange={handleChange}
                             name="city"
                             validators={['required']}
@@ -1165,7 +1221,7 @@ export default function PaginationTable() {
                             type="number"
                             margin="dense"
                             label="Zip Code"
-                            value={''}
+                            value={newCustomer.zip || ''}
                             onChange={handleChange}
                             name="zip"
                             validators={['required']}
@@ -1176,7 +1232,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AddressLine1"
-                            value={''}
+                            value={newCustomer.addressLine1 || ''}
                             onChange={handleChange}
                             name="addressLine1"
                             validators={['required']}
@@ -1187,7 +1243,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AddressLine2"
-                            value={''}
+                            value={newCustomer.addressLine2 || ''}
                             onChange={handleChange}
                             name="addressLine2"
                             validators={['required']}
@@ -1198,7 +1254,7 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="AddressLine3"
-                            value={''}
+                            value={newCustomer.addressLine3 || ''}
                             onChange={handleChange}
                             name="addressLine3"
                             validators={['required']}
@@ -1211,12 +1267,19 @@ export default function PaginationTable() {
                     <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => setCreateOpen(false)}
+                        onClick={() => {
+                            setCreateOpen(false);
+                        }}
                     >
                         Cancel
                     </Button>
 
-                    <Button color="primary" variant="contained" type="submit">
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        type="submit"
+                        onClick={() => formRef.current.submit()}
+                    >
                         <Icon>send</Icon>
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
                     </Button>
@@ -1225,26 +1288,392 @@ export default function PaginationTable() {
 
             {/* This is edit modal with responsive strategy */}
             <Dialog
-                fullScreen={fullScreen}
+                fullWidth
                 open={openEdit}
                 onClose={() => setEditOpen(false)}
-                aria-labelledby="responsive-dialog-title"
+                aria-labelledby="form-dialog-title"
+                minWidth={700} // Disable automatic resizing
             >
-                <DialogTitle id="responsive-dialog-title">
-                    Use Google's location service?
-                </DialogTitle>
+                <DialogTitle id="form-dialog-title">Create new customer</DialogTitle>
 
                 <DialogContent>
-                    <DialogContentText>This is Edit modal</DialogContentText>
+                    <DialogContentText sx={{ color: 'white' }}></DialogContentText>
+                    <ValidatorForm
+                        ref={formRef} // Attach the ref to ValidatorForm
+                        onSubmit={handleSubmit}
+                        onError={() => null}
+                    >
+                        <TextField
+                            autoFocus
+                            id="email"
+                            type="email"
+                            margin="dense"
+                            label="Email Address"
+                            value={newCustomer.email || ''}
+                            onChange={handleChange}
+                            name="email"
+                            validators={['required', 'isEmail']}
+                            errorMessages={['this field is required', 'email is not valid']}
+                        />
+                        {/* <Box display="flex" justifyContent="space-between">
+                            <TextField
+                                autoFocus
+                                type={showPassword ? 'text' : 'password'}
+                                margin="dense"
+                                label="Password"
+                                value={newCustomer.password || ''}
+                                onChange={handleChange}
+                                name="password"
+                                validators={['required', 'isPasswordStrong']}
+                                errorMessages={[
+                                    'this field is required',
+                                    'Password must be minimum 8 characters, including letters and numbers'
+                                ]}
+                                style={{ marginRight: '4px', flex: 1 }}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                            <TextField
+                                autoFocus
+                                type="text"
+                                margin="dense"
+                                label="Confirm Password"
+                                value={newCustomer?.confirmPassword || ''}
+                                onChange={handleChange}
+                                name="confirmPassword"
+                                validators={['required', 'isPasswordMatch']}
+                                errorMessages={['this field is required', 'Passwords do not match']}
+                                style={{ flex: 1 }}
+                            />
+                        </Box> */}
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={newCustomer.active}
+                                    onChange={handleChange}
+                                    name="active"
+                                />
+                            }
+                            label="Active status"
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="First Name"
+                            value={newCustomer.firstName || ''}
+                            onChange={handleChange}
+                            name="firstName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Middle Name"
+                            value={newCustomer.middleName || ''}
+                            onChange={handleChange}
+                            name="middleName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Last Name"
+                            value={newCustomer.lastName || ''}
+                            onChange={handleChange}
+                            name="lastName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Nick Name"
+                            value={newCustomer.nickName || ''}
+                            onChange={handleChange}
+                            name="nickName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            id="birthday"
+                            label="Birthday"
+                            value={newCustomer.birthday || ''}
+                            type="date"
+                            onChange={handleChange}
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            name="birthday"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                            variant="outlined"
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Accounts"
+                            value={newCustomer.accounts || ''}
+                            onChange={handleChange}
+                            name="accounts"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Orders"
+                            value={newCustomer.orders || ''}
+                            onChange={handleChange}
+                            name="orders"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Referrals"
+                            value={newCustomer.referrals || ''}
+                            onChange={handleChange}
+                            name="referrals"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <FormControl style={{ width: '100%' }}>
+                            <InputLabel id="language-label">Language</InputLabel>
+                            <Select
+                                labelId="language-label"
+                                value={newCustomer.language || ''}
+                                onChange={handleChange}
+                                label="Language"
+                            >
+                                <MenuItem value=""></MenuItem>
+                                <MenuItem value={'en'}>English</MenuItem>
+                                <MenuItem value={'fr'}>French</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Phone"
+                            value={newCustomer.phone || ''}
+                            onChange={handleChange}
+                            name="phone"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="ExternalID1"
+                            value={newCustomer.externalID1 || ''}
+                            onChange={handleChange}
+                            name="externalID1"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="ExternalID2"
+                            value={newCustomer.externalID2 || ''}
+                            onChange={handleChange}
+                            name="externalID2"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <FormControl style={{ width: '100%' }}>
+                            <InputLabel id="language-label">Status</InputLabel>
+                            <Select
+                                labelId="language-label"
+                                value={newCustomer.status || ''}
+                                onChange={handleChange}
+                                label="Status"
+                                name="status"
+                            >
+                                <MenuItem value={'allow'}>Allow</MenuItem>
+                                <MenuItem value={'pending'}>Pending</MenuItem>
+                                <MenuItem value={'block'}>Block</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={newCustomer.agreementSigned}
+                                    name="agreementSigned"
+                                    onChange={handleChange}
+                                />
+                            }
+                            label="AgreementSigned"
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="AgreementID"
+                            value={newCustomer.agreementID || ''}
+                            onChange={handleChange}
+                            name="agreementID"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="text"
+                            label="AgreementIP"
+                            value={newCustomer.agreementIP || ''}
+                            onChange={handleChange}
+                            name="agreementIP"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AgreementLegalName"
+                            value={newCustomer.agreementLegalName || ''}
+                            onChange={handleChange}
+                            name="agreementLegalName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AgreementTs"
+                            value={newCustomer.agreementTs || ''}
+                            onChange={handleChange}
+                            name="agreementTs"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Country"
+                            value={newCustomer.country || ''}
+                            onChange={handleChange}
+                            name="country"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="State"
+                            value={newCustomer.state || ''}
+                            onChange={handleChange}
+                            name="state"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="City"
+                            value={newCustomer.city || ''}
+                            onChange={handleChange}
+                            name="city"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Zip Code"
+                            value={newCustomer.zip || ''}
+                            onChange={handleChange}
+                            name="zip"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AddressLine1"
+                            value={newCustomer.addressLine1 || ''}
+                            onChange={handleChange}
+                            name="addressLine1"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AddressLine2"
+                            value={newCustomer.addressLine2 || ''}
+                            onChange={handleChange}
+                            name="addressLine2"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="AddressLine3"
+                            value={newCustomer.addressLine3 || ''}
+                            onChange={handleChange}
+                            name="addressLine3"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                    </ValidatorForm>
                 </DialogContent>
 
                 <DialogActions>
-                    <Button onClick={() => setEditOpen(false)} color="primary">
-                        Disagree
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => {
+                            setCreateOpen(false);
+                        }}
+                    >
+                        Cancel
                     </Button>
 
-                    <Button onClick={() => setEditOpen(false)} color="primary" autoFocus>
-                        Agree
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        type="submit"
+                        onClick={() => formRef.current.submit()}
+                    >
+                        <Icon>send</Icon>
+                        <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
                     </Button>
                 </DialogActions>
             </Dialog>
