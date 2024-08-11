@@ -15,7 +15,8 @@ import {
     RadioGroup,
     Switch,
     Checkbox,
-    Select
+    Select,
+    Box
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
@@ -28,7 +29,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-
+import { useRef } from 'react';
+import {Typography} from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
 import Menu from '@mui/material/Menu';
@@ -128,41 +130,6 @@ const TextField = styled(TextValidator)(() => ({
     marginBottom: '16px'
 }));
 
-const subscribarList = [
-    {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
-    },
-];
 
 export default function PaginationTable() {
     const [page, setPage] = useState(0);
@@ -170,39 +137,15 @@ export default function PaginationTable() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-    const [seletedCustomer, setSelectedCusomer] = useState({});
-    const [customers, setCustomers] = useState({});
-    const [newCustomer, setNewCustomer] = useState({
-        email: '',
-        password: '',
-        active: true,
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        nickName: '',
-        birthday: '',
-        accounts: '',
-        orders: '',
-        referrals: '',
-        language: 'en',
-        phone: '',
-        externalID1: '',
-        externalID2: '',
-        status: '',
-        agreementSigned: true,
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        country: '',
-        state: '',
-        city: '',
-        zip: '',
-        addressLine1: '',
-        addressLine2: '',
-        addressLine3: '',
-        createdAt: '',
-        updateAt: ''
+    const [selectedAccount, setSelectedAccount] = useState({});
+    const [accounts, setAccounts] = useState([]);
+    const [newAccount, setNewAccount] = useState({
+        customerEmail: '',
+        companyEmail: '',
+        planName : '',
+        tradeSystem: '',
     });
+    const formRef = useRef(null);
     const token = localStorage.getItem('token');
     const [anchorEl, setAnchorEl] = React.useState(null);
     // modal manipulatino states
@@ -238,13 +181,13 @@ export default function PaginationTable() {
 
     const fetchCustomer = () => {
         axios
-            .get('/getCustomers', {
+            .get('/getAccounts', {
                 headers: {
                     Authorization: token
                 }
             })
             .then((res) => {
-                setCustomers(res.data.customers);
+                setAccounts(res.data.accounts);
                 showSnackbar(res.data.message, 'success');
             })
             .catch((error) => {
@@ -262,22 +205,17 @@ export default function PaginationTable() {
     };
 
     //form OPs
-    const handleSubmit = (event) => {
-        console.log('submitted');
-        console.log(event);
+    const handleCreateSubmit = (event) => {
+        console.log('submitted', newAccount);
     };
 
     const handleChange = (event) => {
-        event.persist();
-        if (event.target.name === 'active') {
-            setNewCustomer({ ...newCustomer, [event.target.name]: event.target.checked });
-            console.log(newCustomer.active, event.target.checked);
+        if (event.target.name === 'allow' || event.target.name === 'breached') {
+            setNewAccount({ ...newAccount, [event.target.name]: event.target.checked });
             return;
         }
-        setNewCustomer({ ...newCustomer, [event.target.name]: event.target.value });
+        setNewAccount({ ...newAccount, [event.target.name]: event.target.value });
     };
-
-    const handleDateChange = (birthday) => setNewCustomer({ ...newCustomer, birthday });
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -288,89 +226,50 @@ export default function PaginationTable() {
                 <StyledTable stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Email
+                            <TableCell align="left" sx={{ width: '150px' }}>
+                                Display &nbsp; Name
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '170px' }}>
+                                Customer &nbsp; Email
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '200px' }}>
+                                Company &nbsp; Email
                             </TableCell>
                             <TableCell align="left" sx={{ width: '80px' }}>
-                                First &nbsp; Name
+                                Plan
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Last &nbsp; Name
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Nick &nbsp; Name
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '85px' }}>
-                                Birth
+                            <TableCell align="left" sx={{ width: '150px' }}>
+                                Current Equity
                             </TableCell>
                             <TableCell align="left" sx={{ width: '110px' }}>
-                                Accounts
+                                Leverage
                             </TableCell>
                             <TableCell align="left" sx={{ width: '90px' }}>
-                                Orders
+                                Type
                             </TableCell>
                             <TableCell align="left" sx={{ width: '120px' }}>
-                                Referrals
+                                Profit Share
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Language
+                            <TableCell align="left" sx={{ width: '90px' }}>
+                                Allow
                             </TableCell>
                             <TableCell align="left" sx={{ width: '140px' }}>
-                                Phone
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                External ld1
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                External ld2
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Status
+                                Block Reason
                             </TableCell>
                             <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement Signed
+                                Breached
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement ID
+                            <TableCell align="left" sx={{ width: '170px' }}>
+                                Breached Reason
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement IP
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement LegalName
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement Ts
+                            <TableCell align="left" sx={{ width: '140px' }}>
+                                Trade System
                             </TableCell>
                             <TableCell align="left" sx={{ width: '85px', paddingLeft: '20px' }}>
                                 Created
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Last &nbsp;&nbsp;&nbsp; Updated
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Active
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Country
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                State
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                City
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Zip
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '180px' }}>
-                                AddressLine1
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '180px' }}>
-                                AddressLine2
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '180px' }}>
-                                AddressLine3
+                            <TableCell align="left" sx={{ width: '130px' }}>
+                                Last Updated
                             </TableCell>
 
                             <TableCell
@@ -395,45 +294,25 @@ export default function PaginationTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {subscribarList
+                        {accounts
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((subscriber, index) => (
+                            .map((account, index) => (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                    <TableCell align="center">{subscriber.email}</TableCell>
-                                    <TableCell align="center">{subscriber.FName}</TableCell>
-                                    <TableCell align="center">{subscriber.LName}</TableCell>
-                                    <TableCell align="center">{subscriber.NName}</TableCell>
-                                    <TableCell align="center">{subscriber.birth}</TableCell>
-                                    <TableCell align="center">{subscriber.accounts}</TableCell>
-                                    <TableCell align="center">{subscriber.orders}</TableCell>
-                                    <TableCell align="center">{subscriber.referrals}</TableCell>
-                                    <TableCell align="center">{subscriber.lang}</TableCell>
-                                    <TableCell align="center">{subscriber.phone}</TableCell>
-                                    <TableCell align="center">{subscriber.Ext_id1}</TableCell>
-                                    <TableCell align="center">{subscriber.Ext_id2}</TableCell>
-                                    <TableCell align="center">{subscriber.status}</TableCell>
-                                    <TableCell align="center">
-                                        {subscriber.agreementSigned}
-                                    </TableCell>
-                                    <TableCell align="center">{subscriber.agreementId}</TableCell>
-                                    <TableCell align="center">{subscriber.agreementIP}</TableCell>
-                                    <TableCell align="center">
-                                        {subscriber.agreementLegalName}
-                                    </TableCell>
-                                    <TableCell align="center">{subscriber.agreementTs}</TableCell>
-                                    <TableCell align="center">{subscriber.created}</TableCell>
-                                    <TableCell align="center">{subscriber.lastUpdate}</TableCell>
-                                    <TableCell align="center">{subscriber.active}</TableCell>
-                                    <TableCell align="center" sx={{ fontSize: 12 }}>
-                                        {subscriber.country}
-                                    </TableCell>
-                                    <TableCell align="center">{subscriber.state}</TableCell>
-                                    <TableCell align="center">{subscriber.city}</TableCell>
-                                    <TableCell align="center">{subscriber.zip}</TableCell>
-                                    <TableCell align="center">{subscriber.Add1}</TableCell>
-                                    <TableCell align="center">{subscriber.Add2}</TableCell>
-                                    <TableCell align="center">{subscriber.Add3}</TableCell>
-
+                                    <TableCell align="center">{account.displayName}</TableCell>
+                                    <TableCell align="center">{account.customerEmail}</TableCell>
+                                    <TableCell align="center">{account.companyEmail}</TableCell>
+                                    <TableCell align="center">{account.plan}</TableCell>
+                                    <TableCell align="center">{account.currentEquity}</TableCell>
+                                    <TableCell align="center">{account.leverage}</TableCell>
+                                    <TableCell align="center">{account.type}</TableCell>
+                                    <TableCell align="center">{account.profitShare}</TableCell>
+                                    <TableCell align="center">{account.allow ? "Allow" : "Prohibit"}</TableCell>
+                                    <TableCell align="center">{account.blockReason}</TableCell>
+                                    <TableCell align="center">{account.breached ? "Breached" : "Secured"}</TableCell>
+                                    <TableCell align="center">{account.breachedReason}</TableCell>
+                                    <TableCell align="center">{account.tradeSystem}</TableCell>
+                                    <TableCell align="center">{account.createdAt}</TableCell>
+                                    <TableCell align="center">{account.updatedAt}</TableCell>
                                     <TableCell
                                         sx={{
                                             position: 'sticky',
@@ -454,7 +333,6 @@ export default function PaginationTable() {
                                             aria-haspopup="true"
                                             aria-expanded={open ? 'true' : undefined}
                                             variant="contained"
-                                            disableElevation
                                         >
                                             <SettingsIcon sx={{ fontSize: 40 }} />
                                         </IconButton>
@@ -470,17 +348,8 @@ export default function PaginationTable() {
                                             <MenuItem
                                                 onClick={() => {
                                                     handleClose();
-                                                    setEditOpen(true);
-                                                }}
-                                                disableRipple
-                                            >
-                                                <EditIcon />
-                                                Edit
-                                            </MenuItem>
-                                            <MenuItem
-                                                onClick={() => {
-                                                    handleClose();
                                                     setViewOpen(true);
+                                                    setSelectedAccount(account);
                                                 }}
                                                 disableRipple
                                             >
@@ -496,16 +365,6 @@ export default function PaginationTable() {
                                             >
                                                 <EmailIcon />
                                                 Send Credential
-                                            </MenuItem>
-                                            <MenuItem
-                                                onClick={() => {
-                                                    handleClose();
-                                                    setReplaceOpen(true);
-                                                }}
-                                                disableRipple
-                                            >
-                                                <FileCopyIcon />
-                                                Replace Account
                                             </MenuItem>
                                             <MenuItem
                                                 onClick={() => {
@@ -548,7 +407,6 @@ export default function PaginationTable() {
             </TableContainer>
 
             {/* send credential modal*/}
-
             <Dialog
                 open={openCredential}
                 keepMounted
@@ -577,35 +435,7 @@ export default function PaginationTable() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            {/* account replacement handle modal                */}
-            <Dialog
-                open={openReplace}
-                keepMounted
-                onClose={() => setReplaceOpen(false)}
-                TransitionComponent={Transition}
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle id="alert-dialog-slide-title">
-                    Use Google's location service?
-                </DialogTitle>
-
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        this is accont replace
-                    </DialogContentText>
-                </DialogContent>
-
-                <DialogActions>
-                    <Button onClick={() => setReplaceOpen(false)} color="primary">
-                        Disagree
-                    </Button>
-
-                    <Button onClick={() => setReplaceOpen(false)} color="primary">
-                        Agree
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            
             {/* disable account handle modal                */}
             <Dialog
                 open={openDisable}
@@ -635,6 +465,7 @@ export default function PaginationTable() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
             {/* remove account confirm modal                */}
             <Dialog
                 open={openRemove}
@@ -672,7 +503,6 @@ export default function PaginationTable() {
                 open={openCreate}
                 onClose={() => setCreateOpen(false)}
                 aria-labelledby="form-dialog-title"
-                minWidth={700} // Disable automatic resizing
                 // sx={{
                 //     width: 700
                 // }}
@@ -681,183 +511,55 @@ export default function PaginationTable() {
 
                 <DialogContent>
                     <DialogContentText sx={{ color: 'white' }}></DialogContentText>
-                    <ValidatorForm>
+                    <ValidatorForm ref={formRef} onSubmit={handleCreateSubmit} onError={() => null}>
                         <TextField
                             autoFocus
                             id="email"
                             type="email"
                             margin="dense"
-                            label="Email Address"
-                            value={''}
+                            label="Customer Email Address"
+                            value={newAccount.customerEmail || ''}
                             onChange={handleChange}
-                            name="email"
+                            name="customerEmail"
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
                         />
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={newCustomer.active}
-                                    onChange={handleChange}
-                                    name="active"
-                                />
-                            }
-                            label="Active status"
+                         <TextField
+                            autoFocus
+                            id="email"
+                            type="email"
+                            margin="dense"
+                            label="Company Email Address"
+                            value={newAccount.companyEmail || ''}
+                            onChange={handleChange}
+                            name="companyEmail"
+                            validators={['required', 'isEmail']}
+                            errorMessages={['this field is required', 'email is not valid']}
                         />
                         <TextField
                             autoFocus
                             type="text"
                             margin="dense"
-                            label="First Name"
-                            value={''}
+                            label="Plan"
+                            value={newAccount.planName || ""}
                             onChange={handleChange}
-                            name="firtName"
+                            name="planName"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Middle Name"
-                            value={''}
-                            onChange={handleChange}
-                            name="middleName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Last Name"
-                            value={''}
-                            onChange={handleChange}
-                            name="lastName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Nick Name"
-                            value={''}
-                            onChange={handleChange}
-                            name="nickName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            id="birthday"
-                            label="Birthday"
-                            type="date"
-                            onChange={handleChange}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                            name="birthday"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            variant="outlined"
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Accounts"
-                            value={''}
-                            onChange={handleChange}
-                            name="accounts"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Orders"
-                            value={''}
-                            onChange={handleChange}
-                            name="orders"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Referrals"
-                            value={''}
-                            onChange={handleChange}
-                            name="referrals"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <FormControl style={{ width: '100%' }}>
-                            <InputLabel id="language-label">Language</InputLabel>
+                        <FormControl style={{ width: '100%',  marginTop:'15px'}}>
+                            <InputLabel id="tradeSystem">Trade System</InputLabel>
                             <Select
-                                labelId="language-label"
-                                value={''}
+                                labelId="tradeSystem"
+                                value={newAccount.tradeSystem || ""}
                                 onChange={handleChange}
-                                label="Language"
+                                label="Trade System"
+                                name='tradeSystem'
                             >
-                                <MenuItem value={'en'}>English</MenuItem>
-                                <MenuItem value={'fr'}>French</MenuItem>
+                                <MenuItem value={'MT4'}>MT4</MenuItem>
+                                <MenuItem value={'LaserTrader'}>LaserTrader</MenuItem>
                             </Select>
                         </FormControl>
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Phone"
-                            value={''}
-                            onChange={handleChange}
-                            name="phone"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ExternalID1"
-                            value={''}
-                            onChange={handleChange}
-                            name="externalID1"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ExternalID2"
-                            value={''}
-                            onChange={handleChange}
-                            name="externalID2"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <FormControl style={{ width: '100%' }}>
-                            <InputLabel id="language-label">Status</InputLabel>
-                            <Select
-                                labelId="language-label"
-                                value={newCustomer.status}
-                                onChange={handleChange}
-                                label="Language"
-                            >
-                                <MenuItem value={'pending'}>Pending</MenuItem>
-                                <MenuItem value={'allow'}>Allow</MenuItem>
-                                <MenuItem value={'block'}>Block</MenuItem>
-                            </Select>
-                        </FormControl>
-
-                        <FormControlLabel
-                            control={<Checkbox onChange={handleChange} />}
-                            label="AgreementSigned"
-                        />
                     </ValidatorForm>
                 </DialogContent>
 
@@ -870,35 +572,9 @@ export default function PaginationTable() {
                         Cancel
                     </Button>
 
-                    <Button color="primary" variant="contained" type="submit">
+                    <Button color="primary" variant="contained" type="submit" onClick={() => formRef.current.submit()}>
                         <Icon>send</Icon>
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* This is edit modal with responsive strategy */}
-            <Dialog
-                fullScreen={fullScreen}
-                open={openEdit}
-                onClose={() => setEditOpen(false)}
-                aria-labelledby="responsive-dialog-title"
-            >
-                <DialogTitle id="responsive-dialog-title">
-                    Use Google's location service?
-                </DialogTitle>
-
-                <DialogContent>
-                    <DialogContentText>This is Edit modal</DialogContentText>
-                </DialogContent>
-
-                <DialogActions>
-                    <Button onClick={() => setEditOpen(false)} color="primary">
-                        Disagree
-                    </Button>
-
-                    <Button onClick={() => setEditOpen(false)} color="primary" autoFocus>
-                        Agree
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -911,16 +587,57 @@ export default function PaginationTable() {
                 aria-labelledby="responsive-dialog-title"
             >
                 <DialogTitle id="responsive-dialog-title">
-                    Use Google's location service?
+                    Account Details
                 </DialogTitle>
 
                 <DialogContent>
-                    <DialogContentText>This is View modal</DialogContentText>
+                    <Typography>  
+                        <strong>Display Name:</strong> {selectedAccount.displayName}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Email:</strong> {selectedAccount.customerEmail}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Company Email:</strong> {selectedAccount.companyEmail}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Plan:</strong> {selectedAccount.plan}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Current Equity:</strong> {selectedAccount.currentEquity}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Leverage:</strong> {selectedAccount.leverage}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Type:</strong> {selectedAccount.type}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Daily Drawdown:</strong> {selectedAccount.dailyDrawdown}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Total Drawdown:</strong> {selectedAccount.totalDrawdown}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Profit Share:</strong> {selectedAccount.profitShare}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Block Reason:</strong> {selectedAccount.blockReason}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Breached:</strong> {selectedAccount.breached ? 'Yes' : 'No'}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Created:</strong> {new Date(selectedAccount.createdAt).toLocaleString()}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Last Updated:</strong> {new Date(selectedAccount.updatedAt).toLocaleString()}  
+                    </Typography> 
                 </DialogContent>
 
                 <DialogActions>
                     <Button onClick={() => setViewOpen(false)} color="primary">
-                        Disagree
+                        Cancel
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -930,7 +647,7 @@ export default function PaginationTable() {
                 page={page}
                 component="div"
                 rowsPerPage={rowsPerPage}
-                count={subscribarList.length}
+                count={accounts.length}
                 onPageChange={handleChangePage}
                 rowsPerPageOptions={[5, 10, 25]}
                 onRowsPerPageChange={handleChangeRowsPerPage}
