@@ -18,7 +18,8 @@ import {
     Select,
     Box,
     InputAdornment,
-    Chip
+    Chip,
+    Typography
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
@@ -351,6 +352,7 @@ export default function PaginationTable() {
     };
 
     const formatDate = (timestamp) => {
+        if (!timestamp) return '';
         const date = new Date(timestamp);
         return date.toISOString().split('T')[0];
     };
@@ -365,6 +367,19 @@ export default function PaginationTable() {
     };
 
     const handleDateChange = (birthday) => setNewCustomer({ ...newCustomer, birthday });
+
+    function renderStatusChip(status) {
+        switch (status) {
+            case 'allow':
+                return <Chip label={status} color="success" />;
+            case 'block':
+                return <Chip label={status} color="error" />;
+            case 'pending':
+                return <Chip label={status} color="primary" variant="outlined" />;
+            default:
+                return <Chip label="Unknown" color="default" />;
+        }
+    }
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -505,11 +520,7 @@ export default function PaginationTable() {
                                     <TableCell align="center">{customer.externalID1}</TableCell>
                                     <TableCell align="center">{customer.externalID2}</TableCell>
                                     <TableCell align="center">
-                                        <Chip
-                                            label={customer.status}
-                                            color="success"
-                                            variant="outlined"
-                                        />
+                                        {renderStatusChip(customer?.status)}
                                     </TableCell>
                                     <TableCell align="center">
                                         {' '}
@@ -584,7 +595,7 @@ export default function PaginationTable() {
                                                         ...customer,
                                                         password: ''
                                                     });
-                                                    console.log(seletedCustomer);
+
                                                     setEditOpen(true);
                                                 }}
                                                 disableRipple
@@ -595,6 +606,7 @@ export default function PaginationTable() {
                                             <MenuItem
                                                 onClick={() => {
                                                     handleClose();
+                                                    setSelectedCusomer(customer);
                                                     setViewOpen(true);
                                                 }}
                                                 disableRipple
@@ -605,6 +617,7 @@ export default function PaginationTable() {
                                             <MenuItem
                                                 onClick={() => {
                                                     handleClose();
+                                                    setSelectedCusomer(customer);
                                                     setCredentialOpen(true);
                                                 }}
                                                 disableRipple
@@ -1575,17 +1588,117 @@ export default function PaginationTable() {
                 onClose={() => setViewOpen(false)}
                 aria-labelledby="responsive-dialog-title"
             >
-                <DialogTitle id="responsive-dialog-title">
-                    Use Google's location service?
-                </DialogTitle>
+                <DialogTitle id="responsive-dialog-title">Customer Details</DialogTitle>
 
                 <DialogContent>
-                    <DialogContentText>This is View modal</DialogContentText>
+                    <Typography>
+                        <strong>Email:</strong> &nbsp;&nbsp;
+                        {seletedCustomer?.email}
+                    </Typography>
+                    <Typography>
+                        <strong>First Name:</strong>&nbsp;&nbsp; {seletedCustomer?.firstName}
+                    </Typography>
+                    <Typography>
+                        <strong>Middle Name:</strong> &nbsp;&nbsp;{seletedCustomer?.middleName}
+                    </Typography>
+                    <Typography>
+                        <strong>Last Name:</strong> &nbsp;&nbsp;{seletedCustomer?.lastName}
+                    </Typography>
+                    <Typography>
+                        <strong>Nick Name:</strong> &nbsp;&nbsp;{seletedCustomer?.nickName}
+                    </Typography>
+                    <Typography>
+                        <strong>Birthday:</strong> &nbsp;&nbsp;
+                        {formatDate(seletedCustomer?.birthday)}
+                    </Typography>
+                    <Typography>
+                        <strong>Accounts:</strong> &nbsp;&nbsp;{seletedCustomer?.accounts}
+                    </Typography>
+                    <Typography>
+                        <strong>Orders:</strong> &nbsp;&nbsp;{seletedCustomer?.orders}
+                    </Typography>
+                    <Typography>
+                        <strong>Referrals:</strong> &nbsp;&nbsp;{seletedCustomer?.referrals}
+                    </Typography>
+                    <Typography>
+                        <strong>Language:</strong> &nbsp;&nbsp;{seletedCustomer?.language}
+                    </Typography>
+                    <Typography>
+                        <strong>Phone:</strong>&nbsp;&nbsp; {seletedCustomer?.phone}
+                    </Typography>
+                    <Typography>
+                        <strong>External Id1:</strong> &nbsp;&nbsp;{seletedCustomer?.externalID1}
+                    </Typography>
+                    <Typography>
+                        <strong>External Id2:</strong>&nbsp;&nbsp; {seletedCustomer?.externalID2}
+                    </Typography>
+                    <Typography>
+                        <strong>Status:</strong> &nbsp;&nbsp;
+                        {renderStatusChip(seletedCustomer?.status)}
+                    </Typography>
+                    <Typography>
+                        <strong>Status:</strong> &nbsp;&nbsp;
+                        {seletedCustomer?.agreementSigned ? (
+                            <Chip label="SIGNED" color="success" variant="outlined" />
+                        ) : (
+                            <Chip label="NOT" color="default" variant="outlined" />
+                        )}
+                    </Typography>
+                    <Typography>
+                        <strong>AgreementID:</strong> &nbsp;&nbsp;{seletedCustomer?.agreementID}
+                    </Typography>
+                    <Typography>
+                        <strong>AgreementIP:</strong>&nbsp;&nbsp; {seletedCustomer?.agreementIP}
+                    </Typography>
+                    <Typography>
+                        <strong>Agreement LegalName:</strong>&nbsp;&nbsp;
+                        {seletedCustomer?.agreementLegalName}
+                    </Typography>
+                    <Typography>
+                        <strong>AgreementTs:</strong>&nbsp;&nbsp; {seletedCustomer?.agreementTs}
+                    </Typography>
+                    <Typography>
+                        <strong>Created:</strong> &nbsp;&nbsp;
+                        {formatDate(seletedCustomer?.createdAt)}
+                    </Typography>
+                    <Typography>
+                        <strong>Last Updated:</strong>&nbsp;&nbsp;{' '}
+                        {formatDate(seletedCustomer?.updatedAt)}
+                    </Typography>
+                    <Typography>
+                        <strong>IsActive:</strong>{' '}
+                        {seletedCustomer?.active ? (
+                            <Chip label="ACTIVE" color="success" variant="outlined" />
+                        ) : (
+                            <Chip label="NOT" color="default" variant="outlined" />
+                        )}
+                    </Typography>
+                    <Typography>
+                        <strong>Country:</strong> &nbsp;&nbsp;{seletedCustomer?.country}
+                    </Typography>
+                    <Typography>
+                        <strong>State:</strong> &nbsp;&nbsp;{seletedCustomer?.state}
+                    </Typography>
+                    <Typography>
+                        <strong>City:</strong> &nbsp;&nbsp;{seletedCustomer?.city}
+                    </Typography>
+                    <Typography>
+                        <strong>Zip:</strong>&nbsp;&nbsp; {seletedCustomer?.zip}
+                    </Typography>
+                    <Typography>
+                        <strong>AddressLine1:</strong> &nbsp;&nbsp;{seletedCustomer?.addressLine1}
+                    </Typography>
+                    <Typography>
+                        <strong>AddressLine2::</strong>&nbsp;&nbsp; {seletedCustomer?.addressLine2}
+                    </Typography>
+                    <Typography>
+                        <strong>AddressLine3:</strong>&nbsp;&nbsp; {seletedCustomer?.addressLine3}
+                    </Typography>
                 </DialogContent>
 
                 <DialogActions>
                     <Button onClick={() => setViewOpen(false)} color="primary">
-                        Disagree
+                        Cancel
                     </Button>
                 </DialogActions>
             </Dialog>
