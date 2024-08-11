@@ -15,7 +15,8 @@ import {
     RadioGroup,
     Switch,
     Checkbox,
-    Select
+    Select,
+    Box
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
@@ -130,37 +131,24 @@ const TextField = styled(TextValidator)(() => ({
 
 const subscribarList = [
     {
-        archived: true,
-        email: 'test@gmail',
-        title: 'trading',
-        FName: 'Carlos',
-        LName: 'Jin',
-        NName: 'Batman',
-        birth: '09/08/2024',
-        accounts: '3',
-        orders: '1',
-        referrals: '0',
-        lang: 'Spanish,English',
-        phone: '+01506123851',
-        Ext_id1: '',
-        Ext_id2: '',
-        status: 'Pending Kyc',
-        agreementSigned: '',
-        agreementId: '',
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        created: '26/06/2024',
-        lastUpdate: '09/08/2024',
-        active: true,
-        country: 'USA',
-        state: 'Ohio',
-        city: 'Racoon',
-        zip: '1000',
-        Add1: 'CALLE REAL SUBIDA DEL CEMENTERIO CASA NRO 10 URB',
-        Add2: '',
-        Add3: '',
-        plan: '5K Two Phase Test Of Son Alephon Ver 1'
+        displayName: 'John Doe',
+        customerEmail: 'john@gmail.com',
+        companyEmail: 'johnCompany@gmail.com',
+        plan : 'Standard',
+        currentEquity: 100000,
+        leverage: 2,
+        type: 'Live',
+        dailyDrawdown: 500,
+        totalDrawdown: 2000,
+        totalTarget: 2000,
+        profitShare: 20,
+        allow: 'allow',
+        blockReason:'',
+        breached: false,
+        breachedReason: '',
+        tradeSystem: 'SystemA',
+        createdAt: '',
+        updatedAt: '',
     },
 ];
 
@@ -170,38 +158,25 @@ export default function PaginationTable() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-    const [seletedCustomer, setSelectedCusomer] = useState({});
-    const [customers, setCustomers] = useState({});
-    const [newCustomer, setNewCustomer] = useState({
-        email: '',
-        password: '',
-        active: true,
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        nickName: '',
-        birthday: '',
-        accounts: '',
-        orders: '',
-        referrals: '',
-        language: 'en',
-        phone: '',
-        externalID1: '',
-        externalID2: '',
-        status: '',
-        agreementSigned: true,
-        agreementIP: '',
-        agreementLegalName: '',
-        agreementTs: '',
-        country: '',
-        state: '',
-        city: '',
-        zip: '',
-        addressLine1: '',
-        addressLine2: '',
-        addressLine3: '',
-        createdAt: '',
-        updateAt: ''
+    const [seletedAccount, setSelectedAccount] = useState({});
+    const [accounts, setAccounts] = useState({});
+    const [newAccount, setNewAccount] = useState({
+        displayName: '',
+        customerEmail: '',
+        companyEmail: '',
+        plan : '',
+        currentEquity: 0,
+        leverage: 1,
+        type: '',
+        dailyDrawdown: 0,
+        totalDrawdown: 0,
+        totalTarget: 0,
+        profitShare: 0,
+        allow: 'allow',
+        blockReason:'',
+        breached: '',
+        breachedReason: '',
+        tradeSystem: '',
     });
     const token = localStorage.getItem('token');
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -238,13 +213,13 @@ export default function PaginationTable() {
 
     const fetchCustomer = () => {
         axios
-            .get('/getCustomers', {
+            .get('/getAccounts', {
                 headers: {
                     Authorization: token
                 }
             })
             .then((res) => {
-                setCustomers(res.data.customers);
+                setAccounts(res.data.customers);
                 showSnackbar(res.data.message, 'success');
             })
             .catch((error) => {
@@ -263,21 +238,14 @@ export default function PaginationTable() {
 
     //form OPs
     const handleSubmit = (event) => {
-        console.log('submitted');
-        console.log(event);
+        console.log('submitted', newAccount);
     };
 
     const handleChange = (event) => {
+        console.log("this is")
         event.persist();
-        if (event.target.name === 'active') {
-            setNewCustomer({ ...newCustomer, [event.target.name]: event.target.checked });
-            console.log(newCustomer.active, event.target.checked);
-            return;
-        }
-        setNewCustomer({ ...newCustomer, [event.target.name]: event.target.value });
+        setNewAccount({ ...newAccount, [event.target.name]: event.target.value });
     };
-
-    const handleDateChange = (birthday) => setNewCustomer({ ...newCustomer, birthday });
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -288,89 +256,59 @@ export default function PaginationTable() {
                 <StyledTable stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Email
+                            <TableCell align="left" sx={{ width: '150px' }}>
+                                Display &nbsp; Name
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '170px' }}>
+                                Customer &nbsp; Email
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '180px' }}>
+                                Company &nbsp; Email
                             </TableCell>
                             <TableCell align="left" sx={{ width: '80px' }}>
-                                First &nbsp; Name
+                                Plan
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Last &nbsp; Name
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Nick &nbsp; Name
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '85px' }}>
-                                Birth
+                            <TableCell align="left" sx={{ width: '150px' }}>
+                                Current Equity
                             </TableCell>
                             <TableCell align="left" sx={{ width: '110px' }}>
-                                Accounts
+                                Leverage
                             </TableCell>
                             <TableCell align="left" sx={{ width: '90px' }}>
-                                Orders
+                                Type
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Referrals
+                            <TableCell align="left" sx={{ width: '160px' }}>
+                                Daily  Drawdown
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Language
+                            <TableCell align="left" sx={{ width: '160px' }}>
+                                Total Drawdown
                             </TableCell>
                             <TableCell align="left" sx={{ width: '140px' }}>
-                                Phone
+                                Total &nbsp; Target
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '120px' }}>
+                                Profit Share
                             </TableCell>
                             <TableCell align="left" sx={{ width: '90px' }}>
-                                External ld1
+                                Allow
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                External ld2
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Status
+                            <TableCell align="left" sx={{ width: '140px' }}>
+                                Block Reason
                             </TableCell>
                             <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement Signed
+                                Breached
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement ID
+                            <TableCell align="left" sx={{ width: '170px' }}>
+                                Breached Reason
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement IP
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement LegalName
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement Ts
+                            <TableCell align="left" sx={{ width: '140px' }}>
+                                Trade System
                             </TableCell>
                             <TableCell align="left" sx={{ width: '85px', paddingLeft: '20px' }}>
                                 Created
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Last &nbsp;&nbsp;&nbsp; Updated
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Active
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Country
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                State
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                City
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Zip
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '180px' }}>
-                                AddressLine1
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '180px' }}>
-                                AddressLine2
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '180px' }}>
-                                AddressLine3
+                            <TableCell align="left" sx={{ width: '130px' }}>
+                                Last Updated
                             </TableCell>
 
                             <TableCell
@@ -399,41 +337,24 @@ export default function PaginationTable() {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((subscriber, index) => (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                    <TableCell align="center">{subscriber.email}</TableCell>
-                                    <TableCell align="center">{subscriber.FName}</TableCell>
-                                    <TableCell align="center">{subscriber.LName}</TableCell>
-                                    <TableCell align="center">{subscriber.NName}</TableCell>
-                                    <TableCell align="center">{subscriber.birth}</TableCell>
-                                    <TableCell align="center">{subscriber.accounts}</TableCell>
-                                    <TableCell align="center">{subscriber.orders}</TableCell>
-                                    <TableCell align="center">{subscriber.referrals}</TableCell>
-                                    <TableCell align="center">{subscriber.lang}</TableCell>
-                                    <TableCell align="center">{subscriber.phone}</TableCell>
-                                    <TableCell align="center">{subscriber.Ext_id1}</TableCell>
-                                    <TableCell align="center">{subscriber.Ext_id2}</TableCell>
-                                    <TableCell align="center">{subscriber.status}</TableCell>
-                                    <TableCell align="center">
-                                        {subscriber.agreementSigned}
-                                    </TableCell>
-                                    <TableCell align="center">{subscriber.agreementId}</TableCell>
-                                    <TableCell align="center">{subscriber.agreementIP}</TableCell>
-                                    <TableCell align="center">
-                                        {subscriber.agreementLegalName}
-                                    </TableCell>
-                                    <TableCell align="center">{subscriber.agreementTs}</TableCell>
-                                    <TableCell align="center">{subscriber.created}</TableCell>
-                                    <TableCell align="center">{subscriber.lastUpdate}</TableCell>
-                                    <TableCell align="center">{subscriber.active}</TableCell>
-                                    <TableCell align="center" sx={{ fontSize: 12 }}>
-                                        {subscriber.country}
-                                    </TableCell>
-                                    <TableCell align="center">{subscriber.state}</TableCell>
-                                    <TableCell align="center">{subscriber.city}</TableCell>
-                                    <TableCell align="center">{subscriber.zip}</TableCell>
-                                    <TableCell align="center">{subscriber.Add1}</TableCell>
-                                    <TableCell align="center">{subscriber.Add2}</TableCell>
-                                    <TableCell align="center">{subscriber.Add3}</TableCell>
-
+                                    <TableCell align="center">{subscriber.displayName}</TableCell>
+                                    <TableCell align="center">{subscriber.customerEmail}</TableCell>
+                                    <TableCell align="center">{subscriber.companyEmail}</TableCell>
+                                    <TableCell align="center">{subscriber.plan}</TableCell>
+                                    <TableCell align="center">{subscriber.currentEquity}</TableCell>
+                                    <TableCell align="center">{subscriber.leverage}</TableCell>
+                                    <TableCell align="center">{subscriber.type}</TableCell>
+                                    <TableCell align="center">{subscriber.dailyDrawdown}</TableCell>
+                                    <TableCell align="center">{subscriber.totalDrawdown}</TableCell>
+                                    <TableCell align="center">{subscriber.totalTarget}</TableCell>
+                                    <TableCell align="center">{subscriber.profitShare}</TableCell>
+                                    <TableCell align="center">{subscriber.allow}</TableCell>
+                                    <TableCell align="center">{subscriber.blockReason}</TableCell>
+                                    <TableCell align="center">{subscriber.breached}</TableCell>
+                                    <TableCell align="center">{subscriber.breachedReason}</TableCell>
+                                    <TableCell align="center">{subscriber.tradeSystem}</TableCell>
+                                    <TableCell align="center">{subscriber.createdAt}</TableCell>
+                                    <TableCell align="center">{subscriber.updatedAt}</TableCell>
                                     <TableCell
                                         sx={{
                                             position: 'sticky',
@@ -684,92 +605,47 @@ export default function PaginationTable() {
                     <ValidatorForm>
                         <TextField
                             autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Display Name"
+                            value={''}
+                            onChange={handleChange}
+                            name="displayName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
                             id="email"
                             type="email"
                             margin="dense"
-                            label="Email Address"
-                            value={''}
+                            label="Customer Email Address"
+                            value={newAccount.customerEmail || ''}
                             onChange={handleChange}
-                            name="email"
+                            name="customerEmail"
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
                         />
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={newCustomer.active}
-                                    onChange={handleChange}
-                                    name="active"
-                                />
-                            }
-                            label="Active status"
+                         <TextField
+                            autoFocus
+                            id="email"
+                            type="email"
+                            margin="dense"
+                            label="Company Email Address"
+                            value={newAccount.companyEmail || ''}
+                            onChange={handleChange}
+                            name="companyEmail"
+                            validators={['required', 'isEmail']}
+                            errorMessages={['this field is required', 'email is not valid']}
                         />
                         <TextField
                             autoFocus
                             type="text"
                             margin="dense"
-                            label="First Name"
+                            label="Plan"
                             value={''}
                             onChange={handleChange}
-                            name="firtName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Middle Name"
-                            value={''}
-                            onChange={handleChange}
-                            name="middleName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Last Name"
-                            value={''}
-                            onChange={handleChange}
-                            name="lastName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Nick Name"
-                            value={''}
-                            onChange={handleChange}
-                            name="nickName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            id="birthday"
-                            label="Birthday"
-                            type="date"
-                            onChange={handleChange}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                            name="birthday"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            variant="outlined"
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Accounts"
-                            value={''}
-                            onChange={handleChange}
-                            name="accounts"
+                            name="plan"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
@@ -777,10 +653,10 @@ export default function PaginationTable() {
                             autoFocus
                             type="number"
                             margin="dense"
-                            label="Orders"
+                            label="Current Equity"
                             value={''}
                             onChange={handleChange}
-                            name="orders"
+                            name="currentEquity"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
@@ -788,33 +664,89 @@ export default function PaginationTable() {
                             autoFocus
                             type="number"
                             margin="dense"
-                            label="Referrals"
+                            label="Leverage"
                             value={''}
                             onChange={handleChange}
-                            name="referrals"
+                            name="leverage"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
                         <FormControl style={{ width: '100%' }}>
-                            <InputLabel id="language-label">Language</InputLabel>
+                            <InputLabel id="type">Type</InputLabel>
                             <Select
-                                labelId="language-label"
+                                labelId="type"
                                 value={''}
                                 onChange={handleChange}
-                                label="Language"
+                                label="Type"
                             >
-                                <MenuItem value={'en'}>English</MenuItem>
-                                <MenuItem value={'fr'}>French</MenuItem>
-                            </Select>
+                                <MenuItem value={'Phase1'}>Phase1</MenuItem>
+                                <MenuItem value={'Phase2'}>Phase2</MenuItem>
+                                <MenuItem value={'Live'}>Live</MenuItem>
+                                </Select>
                         </FormControl>
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Daily Drawdown"
+                            value={''}
+                            onChange={handleChange}
+                            name="dailyDrawdown"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Total Drawdown"
+                            value={''}
+                            onChange={handleChange}
+                            name="totalDrawdown"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Total Target"
+                            value={''}
+                            onChange={handleChange}
+                            name="totalTarget"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Profit Share"
+                            value={''}
+                            onChange={handleChange}
+                            name="profitShare"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
                         <TextField
                             autoFocus
                             type="text"
                             margin="dense"
-                            label="Phone"
+                            label="Allow"
                             value={''}
                             onChange={handleChange}
-                            name="phone"
+                            name="allow"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                        />
+                        <TextField
+                            autoFocus
+                            type="text"
+                            margin="dense"
+                            label="Block Reason"
+                            value={''}
+                            onChange={handleChange}
+                            name="blockReason"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
@@ -822,42 +754,39 @@ export default function PaginationTable() {
                             autoFocus
                             type="number"
                             margin="dense"
-                            label="ExternalID1"
+                            label="Breached"
                             value={''}
                             onChange={handleChange}
-                            name="externalID1"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ExternalID2"
-                            value={''}
-                            onChange={handleChange}
-                            name="externalID2"
+                            name="breached"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
                         <FormControl style={{ width: '100%' }}>
-                            <InputLabel id="language-label">Status</InputLabel>
+                            <InputLabel id="breachedReason">Breached Reason</InputLabel>
                             <Select
-                                labelId="language-label"
-                                value={newCustomer.status}
+                                labelId="breachedReason"
+                                value={''}
                                 onChange={handleChange}
-                                label="Language"
+                                label="Breached Reason"
                             >
-                                <MenuItem value={'pending'}>Pending</MenuItem>
-                                <MenuItem value={'allow'}>Allow</MenuItem>
-                                <MenuItem value={'block'}>Block</MenuItem>
+                                <MenuItem value={'DailyDrawdown'}>Daily Drawdown</MenuItem>
+                                <MenuItem value={'TotalDrawdown'}>Total Drawdown</MenuItem>
+                                <MenuItem value={'TotalGoal'}>Total Goal</MenuItem>
+                                <MenuItem value={'None'}>None</MenuItem>
                             </Select>
                         </FormControl>
-
-                        <FormControlLabel
-                            control={<Checkbox onChange={handleChange} />}
-                            label="AgreementSigned"
-                        />
+                        <FormControl style={{ width: '100%',  marginTop:'15px'}}>
+                            <InputLabel id="tradeSystem">Trade System</InputLabel>
+                            <Select
+                                labelId="tradeSystem"
+                                value={''}
+                                onChange={handleChange}
+                                label="Trade System"
+                            >
+                                <MenuItem value={'MT4'}>MT4</MenuItem>
+                                <MenuItem value={'LaserTrader'}>LaserTrader</MenuItem>
+                            </Select>
+                        </FormControl>
                     </ValidatorForm>
                 </DialogContent>
 
@@ -870,7 +799,7 @@ export default function PaginationTable() {
                         Cancel
                     </Button>
 
-                    <Button color="primary" variant="contained" type="submit">
+                    <Button color="primary" variant="contained" type="submit" onClick={handleSubmit}>
                         <Icon>send</Icon>
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
                     </Button>
