@@ -150,10 +150,8 @@ export default function PaginationTable() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     // modal manipulatino states
     const [openCredential, setCredentialOpen] = useState(false);
-    const [openReplace, setReplaceOpen] = useState(false);
     const [openDisable, setDisableOpen] = useState(false);
     const [openRemove, setRemoveOpen] = useState(false);
-    const [openEdit, setEditOpen] = useState(false);
     const [openView, setViewOpen] = useState(false);
     const [openCreate, setCreateOpen] = useState(false);
 
@@ -188,7 +186,7 @@ export default function PaginationTable() {
             })
             .then((res) => {
                 setAccounts(res.data.accounts);
-                showSnackbar(res.data.message, 'success');
+                showSnackbar("Fetch Accounts successfully", 'success');
             })
             .catch((error) => {
                 // Handle errors
@@ -205,9 +203,38 @@ export default function PaginationTable() {
     };
 
     //form OPs
-    const handleCreateSubmit = (event) => {
+    const handleCreateSubmit = () => {
         console.log('submitted', newAccount);
+        setCreateOpen(false);
+        axios.post('/createAccount', newAccount, {
+            headers: {
+                Authorization: token
+            }
+    })
+        .then((res) => {
+            console.log("this is the res", res.data);
+            showSnackbar("Create Account successfully", "success");
+        })
+        .catch((err) => {
+            console.log("this is the create error", err);
+        })
     };
+
+    const handleRemoveSubmit = () => {
+        setRemoveOpen(false);
+        console.log("this is the delete", selectedAccount.id);
+        axios.post('/deleteAccount', {accountId: selectedAccount.id}, {
+            headers: {
+                Authorization: token
+            }
+    })
+        .then((res) => {
+            showSnackbar("Delete Account successfully", "success");
+        })
+        .catch((err) => {
+            console.log("this is the delete error", err)
+        })
+    }
 
     const handleChange = (event) => {
         if (event.target.name === 'allow' || event.target.name === 'breached') {
@@ -392,6 +419,7 @@ export default function PaginationTable() {
                                                 onClick={() => {
                                                     handleClose();
                                                     setRemoveOpen(true);
+                                                    setSelectedAccount(account);
                                                 }}
                                                 disableRipple
                                             >
@@ -476,13 +504,16 @@ export default function PaginationTable() {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle id="alert-dialog-slide-title">
-                    Use Google's location service?
+                    Do you remove this account really?
                 </DialogTitle>
 
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        this is account remove
-                    </DialogContentText>
+                    <Typography>  
+                        <strong>Display Name:</strong> {selectedAccount.displayName}  
+                    </Typography>  
+                    <Typography>  
+                        <strong>Email:</strong> {selectedAccount.customerEmail}  
+                    </Typography>  
                 </DialogContent>
 
                 <DialogActions>
@@ -490,7 +521,7 @@ export default function PaginationTable() {
                         Disagree
                     </Button>
 
-                    <Button onClick={() => setRemoveOpen(false)} color="primary">
+                    <Button onClick={() => handleRemoveSubmit()} color="primary">
                         Agree
                     </Button>
                 </DialogActions>
