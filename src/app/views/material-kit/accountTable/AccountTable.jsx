@@ -149,7 +149,7 @@ export default function PaginationTable() {
     const handleCreateOpen = () => setCreateOpen(true);
 
     useEffect(() => {
-        fetchCustomer();
+        fetchAccounts();
     }, []);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -168,7 +168,7 @@ export default function PaginationTable() {
         setSnackbarOpen(false);
     };
 
-    const fetchCustomer = () => {
+    const fetchAccounts = () => {
         axios
             .get('/getAccounts', {
                 headers: {
@@ -245,7 +245,7 @@ export default function PaginationTable() {
                 }
             })
             .then((res) => {
-                fetchCustomer();
+                fetchAccounts();
                 showSnackbar('Create Account successfully', 'success');
             })
             .catch((error) => {
@@ -274,7 +274,7 @@ export default function PaginationTable() {
                 }
             )
             .then((res) => {
-                fetchCustomer();
+                fetchAccounts();
                 showSnackbar('Delete Account successfully', 'success');
             })
             .catch((error) => {
