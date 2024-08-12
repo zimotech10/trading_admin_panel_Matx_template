@@ -30,7 +30,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useRef } from 'react';
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
 import Menu from '@mui/material/Menu';
@@ -130,7 +130,6 @@ const TextField = styled(TextValidator)(() => ({
     marginBottom: '16px'
 }));
 
-
 export default function PaginationTable() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -142,8 +141,8 @@ export default function PaginationTable() {
     const [newAccount, setNewAccount] = useState({
         customerEmail: '',
         companyEmail: '',
-        planName : '',
-        tradeSystem: '',
+        planName: '',
+        tradeSystem: ''
     });
     const formRef = useRef(null);
     const token = localStorage.getItem('token');
@@ -186,7 +185,7 @@ export default function PaginationTable() {
             })
             .then((res) => {
                 setAccounts(res.data.accounts);
-                showSnackbar("Fetch Accounts successfully", 'success');
+                showSnackbar('Fetch Accounts successfully', 'success');
             })
             .catch((error) => {
                 // Handle errors
@@ -206,35 +205,42 @@ export default function PaginationTable() {
     const handleCreateSubmit = () => {
         console.log('submitted', newAccount);
         setCreateOpen(false);
-        axios.post('/createAccount', newAccount, {
-            headers: {
-                Authorization: token
-            }
-    })
-        .then((res) => {
-            console.log("this is the res", res.data);
-            showSnackbar("Create Account successfully", "success");
-        })
-        .catch((err) => {
-            console.log("this is the create error", err);
-        })
+        axios
+            .post('/createAccount', newAccount, {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                fetchCustomer();
+                showSnackbar('Create Account successfully', 'success');
+            })
+            .catch((err) => {
+                console.log('this is the create error', err);
+            });
     };
 
     const handleRemoveSubmit = () => {
         setRemoveOpen(false);
-        console.log("this is the delete", selectedAccount.id);
-        axios.post('/deleteAccount', {accountId: selectedAccount.id}, {
-            headers: {
-                Authorization: token
-            }
-    })
-        .then((res) => {
-            showSnackbar("Delete Account successfully", "success");
-        })
-        .catch((err) => {
-            console.log("this is the delete error", err)
-        })
-    }
+        console.log('this is the delete', selectedAccount.id);
+        axios
+            .post(
+                '/deleteAccount',
+                { accountId: selectedAccount.id },
+                {
+                    headers: {
+                        Authorization: token
+                    }
+                }
+            )
+            .then((res) => {
+                fetchCustomer();
+                showSnackbar('Delete Account successfully', 'success');
+            })
+            .catch((err) => {
+                console.log('this is the delete error', err);
+            });
+    };
 
     const handleChange = (event) => {
         if (event.target.name === 'allow' || event.target.name === 'breached') {
@@ -333,9 +339,13 @@ export default function PaginationTable() {
                                     <TableCell align="center">{account.leverage}</TableCell>
                                     <TableCell align="center">{account.type}</TableCell>
                                     <TableCell align="center">{account.profitShare}</TableCell>
-                                    <TableCell align="center">{account.allow ? "Allow" : "Prohibit"}</TableCell>
+                                    <TableCell align="center">
+                                        {account.allow ? 'Allow' : 'Prohibit'}
+                                    </TableCell>
                                     <TableCell align="center">{account.blockReason}</TableCell>
-                                    <TableCell align="center">{account.breached ? "Breached" : "Secured"}</TableCell>
+                                    <TableCell align="center">
+                                        {account.breached ? 'Breached' : 'Secured'}
+                                    </TableCell>
                                     <TableCell align="center">{account.breachedReason}</TableCell>
                                     <TableCell align="center">{account.tradeSystem}</TableCell>
                                     <TableCell align="center">{account.createdAt}</TableCell>
@@ -463,7 +473,7 @@ export default function PaginationTable() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            
+
             {/* disable account handle modal                */}
             <Dialog
                 open={openDisable}
@@ -508,12 +518,12 @@ export default function PaginationTable() {
                 </DialogTitle>
 
                 <DialogContent>
-                    <Typography>  
-                        <strong>Display Name:</strong> {selectedAccount.displayName}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Email:</strong> {selectedAccount.customerEmail}  
-                    </Typography>  
+                    <Typography>
+                        <strong>Display Name:</strong> {selectedAccount.displayName}
+                    </Typography>
+                    <Typography>
+                        <strong>Email:</strong> {selectedAccount.customerEmail}
+                    </Typography>
                 </DialogContent>
 
                 <DialogActions>
@@ -555,7 +565,7 @@ export default function PaginationTable() {
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
                         />
-                         <TextField
+                        <TextField
                             autoFocus
                             id="email"
                             type="email"
@@ -572,20 +582,20 @@ export default function PaginationTable() {
                             type="text"
                             margin="dense"
                             label="Plan"
-                            value={newAccount.planName || ""}
+                            value={newAccount.planName || ''}
                             onChange={handleChange}
                             name="planName"
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
-                        <FormControl style={{ width: '100%',  marginTop:'15px'}}>
+                        <FormControl style={{ width: '100%', marginTop: '15px' }}>
                             <InputLabel id="tradeSystem">Trade System</InputLabel>
                             <Select
                                 labelId="tradeSystem"
-                                value={newAccount.tradeSystem || ""}
+                                value={newAccount.tradeSystem || ''}
                                 onChange={handleChange}
                                 label="Trade System"
-                                name='tradeSystem'
+                                name="tradeSystem"
                             >
                                 <MenuItem value={'MT4'}>MT4</MenuItem>
                                 <MenuItem value={'LaserTrader'}>LaserTrader</MenuItem>
@@ -603,7 +613,12 @@ export default function PaginationTable() {
                         Cancel
                     </Button>
 
-                    <Button color="primary" variant="contained" type="submit" onClick={() => formRef.current.submit()}>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        type="submit"
+                        onClick={() => formRef.current.submit()}
+                    >
                         <Icon>send</Icon>
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
                     </Button>
@@ -617,53 +632,53 @@ export default function PaginationTable() {
                 onClose={() => setViewOpen(false)}
                 aria-labelledby="responsive-dialog-title"
             >
-                <DialogTitle id="responsive-dialog-title">
-                    Account Details
-                </DialogTitle>
+                <DialogTitle id="responsive-dialog-title">Account Details</DialogTitle>
 
                 <DialogContent>
-                    <Typography>  
-                        <strong>Display Name:</strong> {selectedAccount.displayName}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Email:</strong> {selectedAccount.customerEmail}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Company Email:</strong> {selectedAccount.companyEmail}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Plan:</strong> {selectedAccount.plan}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Current Equity:</strong> {selectedAccount.currentEquity}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Leverage:</strong> {selectedAccount.leverage}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Type:</strong> {selectedAccount.type}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Daily Drawdown:</strong> {selectedAccount.dailyDrawdown}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Total Drawdown:</strong> {selectedAccount.totalDrawdown}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Profit Share:</strong> {selectedAccount.profitShare}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Block Reason:</strong> {selectedAccount.blockReason}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Breached:</strong> {selectedAccount.breached ? 'Yes' : 'No'}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Created:</strong> {new Date(selectedAccount.createdAt).toLocaleString()}  
-                    </Typography>  
-                    <Typography>  
-                        <strong>Last Updated:</strong> {new Date(selectedAccount.updatedAt).toLocaleString()}  
-                    </Typography> 
+                    <Typography>
+                        <strong>Display Name:</strong> {selectedAccount.displayName}
+                    </Typography>
+                    <Typography>
+                        <strong>Email:</strong> {selectedAccount.customerEmail}
+                    </Typography>
+                    <Typography>
+                        <strong>Company Email:</strong> {selectedAccount.companyEmail}
+                    </Typography>
+                    <Typography>
+                        <strong>Plan:</strong> {selectedAccount.plan}
+                    </Typography>
+                    <Typography>
+                        <strong>Current Equity:</strong> {selectedAccount.currentEquity}
+                    </Typography>
+                    <Typography>
+                        <strong>Leverage:</strong> {selectedAccount.leverage}
+                    </Typography>
+                    <Typography>
+                        <strong>Type:</strong> {selectedAccount.type}
+                    </Typography>
+                    <Typography>
+                        <strong>Daily Drawdown:</strong> {selectedAccount.dailyDrawdown}
+                    </Typography>
+                    <Typography>
+                        <strong>Total Drawdown:</strong> {selectedAccount.totalDrawdown}
+                    </Typography>
+                    <Typography>
+                        <strong>Profit Share:</strong> {selectedAccount.profitShare}
+                    </Typography>
+                    <Typography>
+                        <strong>Block Reason:</strong> {selectedAccount.blockReason}
+                    </Typography>
+                    <Typography>
+                        <strong>Breached:</strong> {selectedAccount.breached ? 'Yes' : 'No'}
+                    </Typography>
+                    <Typography>
+                        <strong>Created:</strong>{' '}
+                        {new Date(selectedAccount.createdAt).toLocaleString()}
+                    </Typography>
+                    <Typography>
+                        <strong>Last Updated:</strong>{' '}
+                        {new Date(selectedAccount.updatedAt).toLocaleString()}
+                    </Typography>
                 </DialogContent>
 
                 <DialogActions>
