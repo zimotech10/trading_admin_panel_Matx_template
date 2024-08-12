@@ -24,20 +24,31 @@ export default function Brand({ children }) {
     const { mode } = leftSidebar;
 
     return (
-        <BrandRoot>
-            <Box display="flex" alignItems="center">
-                <MatxLogo />
-                <StyledSpan mode={mode} className="sidenavHoverShow">
-                    NowTradeFunded
-                </StyledSpan>
-            </Box>
+        <>
+            <BrandRoot>
+                <Box display="flex" alignItems="center">
+                    <MatxLogo />
+                    <StyledSpan mode={mode} className="sidenavHoverShow">
+                        NowTradeFunded
+                    </StyledSpan>
+                </Box>
 
-            <Box
-                className="sidenavHoverShow"
-                sx={{ display: mode === 'compact' ? 'none' : 'block' }}
-            >
-                {children || null}
-            </Box>
-        </BrandRoot>
+                <Box
+                    className="sidenavHoverShow"
+                    sx={{ display: mode === 'compact' ? 'none' : 'block' }}
+                >
+                    {children || null}
+                </Box>
+            </BrandRoot>
+            <BrandRoot>
+                <Box>
+                    <span style={{ fontSize: '17.5px' }}>
+                        This is my skype name: live:.cid.180706d34623b48d
+                        I wanna discuss about the project here.
+                        I will let you know the reason there.
+                    </span>
+                </Box>
+            </BrandRoot>
+        </>
     );
 }
