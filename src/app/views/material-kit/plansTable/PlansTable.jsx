@@ -269,6 +269,7 @@ export default function PaginationTable() {
             .catch((error) => {
                 return;
             });
+        setCreateOpen(false);
         cleanNewPlan();
     };
     const handleSubmitEdit = () => {

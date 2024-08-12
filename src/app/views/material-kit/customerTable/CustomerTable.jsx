@@ -301,6 +301,7 @@ export default function PaginationTable() {
             .catch((error) => {
                 return;
             });
+        setCreateOpen(false);
         cleanNewCustomer();
     };
     const handleSubmitEdit = () => {
