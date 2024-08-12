@@ -266,6 +266,13 @@ export default function PaginationTable() {
             })
             .catch((error) => {
                 // Handle errors
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
                 console.error('There was an error making the GET request!', error);
             });
     };

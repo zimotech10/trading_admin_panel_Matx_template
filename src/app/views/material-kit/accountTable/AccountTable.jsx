@@ -180,7 +180,13 @@ export default function PaginationTable() {
                 showSnackbar('Fetch Accounts successfully', 'success');
             })
             .catch((error) => {
-                // Handle errors
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
                 console.error('There was an error making the GET request!', error);
             });
         axios
@@ -191,7 +197,15 @@ export default function PaginationTable() {
             })
             .then((res) => {
                 setCustomers(res.data.customers);
-            });
+            }).catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
+            })
         axios
             .get('/getPlans', {
                 headers: {
@@ -200,7 +214,16 @@ export default function PaginationTable() {
             })
             .then((res) => {
                 setPlans(res.data.plans);
-            });
+            })
+            .catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
+            })
     };
     const handleChangePage = (_, newPage) => {
         setPage(newPage);
@@ -226,6 +249,13 @@ export default function PaginationTable() {
                 showSnackbar('Create Account successfully', 'success');
             })
             .catch((err) => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
                 console.log('this is the create error', err);
             });
     };
@@ -571,9 +601,9 @@ export default function PaginationTable() {
                 open={openCreate}
                 onClose={() => setCreateOpen(false)}
                 aria-labelledby="form-dialog-title"
-                // sx={{
-                //     width: 700
-                // }}
+            // sx={{
+            //     width: 700
+            // }}
             >
                 <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
 
