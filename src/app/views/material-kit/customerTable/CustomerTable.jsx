@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -393,10 +394,37 @@ export default function PaginationTable() {
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const refresh = () => {
+        axios
+            .get('/getCustomers', {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                setCustomers(res.data.customers);
+                showSnackbar(res.data.message, 'success');
+                console.log(customers);
+            })
+            .catch((error) => {
+                // Handle errors
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
+                console.error('There was an error making the GET request!', error);
+            });
+    }
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 530 }}>
+                <Button sx={{ background: '#4A76ED', color: '#E6E6E6' }} onClick={refresh} variant="contained" color="primary" startIcon={<RefreshIcon />}>
+                    Refresh
+                </Button>
                 <StyledTable stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -1758,6 +1786,7 @@ export default function PaginationTable() {
                 nextIconButtonProps={{ 'aria-label': 'Next Page' }}
                 backIconButtonProps={{ 'aria-label': 'Previous Page' }}
             />
+
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}

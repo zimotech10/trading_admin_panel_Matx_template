@@ -40,9 +40,9 @@ const reducer = (state, action) => {
 const AuthContext = createContext({
     ...initialState,
     method: 'JWT',
-    login: () => { },
-    logout: () => { },
-    register: () => { }
+    login: () => {},
+    logout: () => {},
+    register: () => {}
 });
 
 export const AuthProvider = ({ children }) => {

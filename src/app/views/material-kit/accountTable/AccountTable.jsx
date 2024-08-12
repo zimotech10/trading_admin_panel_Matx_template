@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
-
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -287,10 +287,70 @@ export default function PaginationTable() {
         const date = new Date(timestamp);
         return date.toISOString().split('T')[0];
     };
+    const refresh = () => {
+        axios
+            .get('/getAccounts', {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                setAccounts(res.data.accounts);
+                showSnackbar('Fetch Accounts successfully', 'success');
+            })
+            .catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
+                console.error('There was an error making the GET request!', error);
+            });
+        axios
+            .get('/getCustomers', {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                setCustomers(res.data.customers);
+            }).catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
+            })
+        axios
+            .get('/getPlans', {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                setPlans(res.data.plans);
+            })
+            .catch((error) => {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.error('Unauthorized! Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.reload();
+                    }
+                }
+            })
+    }
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 530 }}>
+                <Button sx={{ background: '#4A76ED', color: '#E6E6E6' }} onClick={refresh} variant="contained" color="primary" startIcon={<RefreshIcon />}>
+                    Refresh
+                </Button>
                 <StyledTable stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>

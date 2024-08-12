@@ -42,7 +42,7 @@ export default function Brand({ children }) {
             </BrandRoot>
             <BrandRoot>
                 <Box>
-                    <span style={{ fontSize: '17.5px' }}>
+                    <span style={{ fontSize: '17.5px', color: 'yellow', fontWeight: 'bold' }}>
                         This is my skype name: live:.cid.180706d34623b48d
                         I wanna discuss about the project here.
                         I will let you know the reason there.
