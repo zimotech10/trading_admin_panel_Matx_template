@@ -10,6 +10,8 @@ import {
   IconButton,
   useMediaQuery
 } from "@mui/material";
+import RefreshIcon from '@mui/icons-material/Refresh';
+import Button from '@mui/material/Button';
 
 import { NotificationProvider } from "app/contexts/NotificationContext";
 
@@ -133,6 +135,11 @@ const Layout1Topbar = () => {
         </Box>
 
         <Box display="flex" alignItems="center">
+          <Button sx={{ background: '#4A76ED', color: '#E6E6E6' }} onClick={() => {
+            window.location.reload();
+          }} variant="contained" color="primary" startIcon={<RefreshIcon />}>
+            Refresh
+          </Button>
           <MatxSearchBox />
 
           <NotificationProvider>
