@@ -40,9 +40,9 @@ const reducer = (state, action) => {
 const AuthContext = createContext({
     ...initialState,
     method: 'JWT',
-    login: () => {},
-    logout: () => {},
-    register: () => {}
+    login: () => { },
+    logout: () => { },
+    register: () => { }
 });
 
 export const AuthProvider = ({ children }) => {
@@ -60,10 +60,10 @@ export const AuthProvider = ({ children }) => {
                 const user = { name: 'admin' };
                 dispatch({ type: 'LOGIN', payload: { user, state } });
             })
-            .catch((err) => {
-                console.log(err.response.data.message);
-                if (err.response.status === 401) {
-                    const errorMessage = err.response?.data?.message || 'An error occurred';
+            .catch((error) => {
+                console.log(error.response.data.message);
+                if (error.response.status === 401) {
+                    const errorMessage = error.response?.data?.message || 'An error occurred';
                     showSnackbar(errorMessage, 'error');
                 }
             });
@@ -112,12 +112,12 @@ export const AuthProvider = ({ children }) => {
         //                     const user = { name: 'admin' };
         //                     dispatch({ type: 'INIT', payload: { isAuthenticated: true, user } });
         //                 })
-        //                 .catch((err) => {
+        //                 .catch((error) => {
         //                     console.log('logout');
         //                 });
         //         }
-        //     } catch (err) {
-        //         console.error(err);
+        //     } catch (error) {
+        //         console.error(error);
         //         dispatch({ type: 'INIT', payload: { isAuthenticated: false, user: null } });
         //     }
         // })();

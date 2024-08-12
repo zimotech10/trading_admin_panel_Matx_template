@@ -256,7 +256,7 @@ export default function PaginationTable() {
                         window.location.reload();
                     }
                 }
-                console.log('this is the create error', err);
+                console.log('this is the create error', error);
             });
     };
 
@@ -277,8 +277,8 @@ export default function PaginationTable() {
                 fetchCustomer();
                 showSnackbar('Delete Account successfully', 'success');
             })
-            .catch((err) => {
-                console.log('this is the delete error', err);
+            .catch((error) => {
+                console.log('this is the delete error', error);
             });
     };
 

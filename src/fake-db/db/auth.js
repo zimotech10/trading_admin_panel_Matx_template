@@ -29,8 +29,8 @@ Mock.onPost("/api/auth/login").reply(async (config) => {
 
     const payload = { user: userList[0] };
     return [200, payload];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [500, { message: "Internal server error" }];
   }
 });
@@ -56,8 +56,8 @@ Mock.onPost("/api/auth/register").reply((config) => {
 
     const payload = { user: { ...newUser } };
     return [200, payload];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [500, { message: "Internal server error" }];
   }
 });
@@ -79,8 +79,8 @@ Mock.onGet("/api/auth/profile").reply((config) => {
 
     const payload = { user: userList[0] };
     return [200, payload];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [500, { message: "Internal server error" }];
   }
 });
