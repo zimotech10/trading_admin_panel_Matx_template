@@ -58,9 +58,9 @@ const StyledRoot = styled('div')(() => ({
 
 // initial login credentials
 const initialValues = {
-    email: 'testCompany@gmail.com',
-    password: '123456',
-    remember: true
+    email: '',
+    password: '',
+    remember: false
 };
 
 // form field validation schema
