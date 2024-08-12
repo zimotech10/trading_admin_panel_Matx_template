@@ -18,7 +18,7 @@ export default function AppTable() {
         <Container>
             <Box className="breadcrumb">
                 <Breadcrumb
-                    routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Table' }]}
+                    routeSegments={[{ name: 'PlansTable', path: '/material/plansTable' }]}
                 />
             </Box>
 
@@ -26,7 +26,7 @@ export default function AppTable() {
         <SimpleTable />
       </SimpleCard> */}
 
-            <SimpleCard title="Pagination Table">
+            <SimpleCard title="Plan Table">
                 <PlansTable />
             </SimpleCard>
         </Container>

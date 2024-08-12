@@ -18,15 +18,11 @@ export default function AppTable() {
         <Container>
             <Box className="breadcrumb">
                 <Breadcrumb
-                    routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Table' }]}
+                    routeSegments={[{ name: 'AccountTable', path: '/material/accountTable' }]}
                 />
             </Box>
 
-            {/* <SimpleCard title="Simple Table">
-        <SimpleTable />
-      </SimpleCard> */}
-
-            <SimpleCard title="Pagination Table">
+            <SimpleCard title="Account Table">
                 <AccountTable />
             </SimpleCard>
         </Container>

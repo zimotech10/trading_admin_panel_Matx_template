@@ -17,7 +17,7 @@ export default function AppTable() {
         <Container>
             <Box className="breadcrumb">
                 <Breadcrumb
-                    routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Table' }]}
+                    routeSegments={[{ name: 'CustomerTable', path: '/material/customerTable' }]}
                 />
             </Box>
 
