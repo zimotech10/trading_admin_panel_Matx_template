@@ -160,7 +160,8 @@ export default function PaginationTable() {
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
-    const cleanNewPlan = () =>
+    const cleanNewPlan = () => {
+        console.log('clean');
         setNewPlan({
             name: '',
             price: '',
@@ -174,7 +175,7 @@ export default function PaginationTable() {
             createdAt: '',
             updatedAt: ''
         });
-
+    };
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
@@ -247,6 +248,7 @@ export default function PaginationTable() {
 
     //form OPs
     const handleSubmit = () => {
+        console.log(newPlan);
         axios
             .post('/createPlan', newPlan, {
                 headers: {
@@ -254,18 +256,19 @@ export default function PaginationTable() {
                 }
             })
             .then((res) => {
-                cleanNewPlan();
                 showSnackbar(res.data.messages, 'success');
+                fetchPlan();
             })
             .catch((error) => {
                 return;
             });
+        cleanNewPlan();
     };
     const handleSubmitEdit = () => {
         axios
             .post(
                 '/updatePlan',
-                { ...selectedPlan, PlanId: selectedPlan.id },
+                { ...selectedPlan, planId: selectedPlan.id },
                 {
                     headers: {
                         Authorization: token
@@ -284,7 +287,7 @@ export default function PaginationTable() {
         axios
             .post(
                 '/deletePlan',
-                { PlanId: id },
+                { planId: id },
                 {
                     headers: {
                         Authorization: token
@@ -795,7 +798,6 @@ export default function PaginationTable() {
                         variant="outlined"
                         color="secondary"
                         onClick={() => {
-                            cleanNewPlan();
                             setCreateOpen(false);
                         }}
                     >
@@ -808,7 +810,7 @@ export default function PaginationTable() {
                         type="submit"
                         onClick={() => {
                             formRef.current.submit();
-                            cleanNewPlan();
+
                             setCreateOpen(false);
                         }}
                     >

@@ -1,6 +1,7 @@
 import { createContext, useEffect, useReducer, useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 // CUSTOM COMPONENT
 import { MatxLoading } from 'app/components';
 
@@ -45,6 +46,7 @@ const AuthContext = createContext({
 });
 
 export const AuthProvider = ({ children }) => {
+    const navigate = useNavigate();
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const login = async (email, password) => {
@@ -75,6 +77,8 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        localStorage.removeItem('token');
+        navigate('/session/signin');
         dispatch({ type: 'LOGOUT' });
     };
     const [snackbarOpen, setSnackbarOpen] = useState(false);

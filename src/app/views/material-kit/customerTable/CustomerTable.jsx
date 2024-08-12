@@ -161,6 +161,7 @@ export default function PaginationTable() {
         addressLine3: ''
     });
     const formRef = useRef(null);
+    const formRef1 = useRef(null);
     const token = localStorage.getItem('token');
     const [anchorEl, setAnchorEl] = React.useState(null);
     // modal manipulatino states
@@ -214,21 +215,21 @@ export default function PaginationTable() {
     const handleCreateOpen = () => setCreateOpen(true);
 
     // To validation wether password same as confirmPassword, uncommit this useEffect function
-    useEffect(() => {
-        // ValidatorForm.addValidationRule('isPasswordStrong', (value) => {
-        //     return value.length >= 8 && /\d/.test(value) && /[a-zA-Z]/.test(value);
-        // });
+    // useEffect(() => {
+    // ValidatorForm.addValidationRule('isPasswordStrong', (value) => {
+    //     return value.length >= 8 && /\d/.test(value) && /[a-zA-Z]/.test(value);
+    // });
 
-        // Password match validator
-        ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-            return value === newCustomer.password;
-        });
+    // Password match validator
+    // ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
+    //     return value === newCustomer.password;
+    // });
 
-        return () => {
-            // ValidatorForm.removeValidationRule('isPasswordStrong');
-            ValidatorForm.removeValidationRule('isPasswordMatch');
-        };
-    }, [seletedCustomer?.password]);
+    // return () => {
+    //     ValidatorForm.removeValidationRule('isPasswordStrong');
+    //     ValidatorForm.removeValidationRule('isPasswordMatch');
+    // };
+    // }, [newCustomer?.email]);
 
     useEffect(() => {
         fetchCustomer();
@@ -287,12 +288,13 @@ export default function PaginationTable() {
                 }
             })
             .then((res) => {
-                cleanNewCustomer();
+                fetchCustomer();
                 showSnackbar(res.data.messages, 'success');
             })
             .catch((error) => {
                 return;
             });
+        cleanNewCustomer();
     };
     const handleSubmitEdit = () => {
         axios
@@ -1152,7 +1154,7 @@ export default function PaginationTable() {
                         type="submit"
                         onClick={() => {
                             formRef.current.submit();
-                            cleanNewCustomer();
+
                             setCreateOpen(false);
                         }}
                     >
@@ -1174,7 +1176,7 @@ export default function PaginationTable() {
 
                 <DialogContent>
                     <ValidatorForm
-                        ref={formRef} // Attach the ref to ValidatorForm
+                        ref={formRef1} // Attach the ref to ValidatorForm
                         onSubmit={handleSubmitEdit}
                         onError={() => null}
                     >
@@ -1573,7 +1575,7 @@ export default function PaginationTable() {
                         color="primary"
                         variant="contained"
                         type="submit"
-                        onClick={() => formRef.current.submit()}
+                        onClick={() => formRef1.current.submit()}
                     >
                         <Icon>send</Icon>
                         <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>

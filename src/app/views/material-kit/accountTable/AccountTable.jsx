@@ -56,19 +56,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 import { Span } from 'app/components/Typography';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { Fullscreen } from '@mui/icons-material';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateField } from '@mui/x-date-pickers/DateField';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -78,7 +67,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 const StyledTable = styled(Table)(() => ({
     whiteSpace: 'pre',
     '& thead': {
-        '& tr': { '& th': { paddingLeft: 20, paddingRight: 0, fontSize: 18, color: 'blue' } }
+        '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue' } }
     },
     '& tbody': {
         '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize', fontWeight: 'bold' } }
@@ -140,9 +129,10 @@ export default function PaginationTable() {
     const [accounts, setAccounts] = useState([]);
     const [newAccount, setNewAccount] = useState({
         customerEmail: '',
-        companyEmail: '',
+        // companyEmail: '',
         planName: '',
-        tradeSystem: ''
+        tradeSystem: '',
+        displayName: ''
     });
     const formRef = useRef(null);
     const token = localStorage.getItem('token');
@@ -153,6 +143,8 @@ export default function PaginationTable() {
     const [openRemove, setRemoveOpen] = useState(false);
     const [openView, setViewOpen] = useState(false);
     const [openCreate, setCreateOpen] = useState(false);
+    const [customers, setCustomers] = useState([]);
+    const [plans, setPlans] = useState([]);
 
     const handleCreateOpen = () => setCreateOpen(true);
 
@@ -190,6 +182,24 @@ export default function PaginationTable() {
             .catch((error) => {
                 // Handle errors
                 console.error('There was an error making the GET request!', error);
+            });
+        axios
+            .get('/getCustomers', {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                setCustomers(res.data.customers);
+            });
+        axios
+            .get('/getPlans', {
+                headers: {
+                    Authorization: token
+                }
+            })
+            .then((res) => {
+                setPlans(res.data.plans);
             });
     };
     const handleChangePage = (_, newPage) => {
@@ -252,6 +262,11 @@ export default function PaginationTable() {
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const formatDate = (timestamp) => {
+        if (!timestamp) return '';
+        const date = new Date(timestamp);
+        return date.toISOString().split('T')[0];
+    };
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -260,19 +275,25 @@ export default function PaginationTable() {
                     <TableHead>
                         <TableRow>
                             <TableCell align="left" sx={{ width: '150px' }}>
-                                Display &nbsp; Name
+                                DisplayName
                             </TableCell>
                             <TableCell align="left" sx={{ width: '170px' }}>
                                 Customer &nbsp; Email
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '200px' }}>
+                            {/* <TableCell align="left" sx={{ width: '200px' }}>
                                 Company &nbsp; Email
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell align="left" sx={{ width: '80px' }}>
                                 Plan
                             </TableCell>
                             <TableCell align="left" sx={{ width: '150px' }}>
                                 Current Equity
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '150px' }}>
+                                Balance
+                            </TableCell>
+                            <TableCell align="left" sx={{ width: '150px' }}>
+                                DailyDrawdown
                             </TableCell>
                             <TableCell align="left" sx={{ width: '110px' }}>
                                 Leverage
@@ -298,11 +319,11 @@ export default function PaginationTable() {
                             <TableCell align="left" sx={{ width: '140px' }}>
                                 Trade System
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '85px', paddingLeft: '20px' }}>
-                                Created
+                            <TableCell align="left" sx={{ width: '100px', paddingLeft: '20px' }}>
+                                CreatAt
                             </TableCell>
                             <TableCell align="left" sx={{ width: '130px' }}>
-                                Last Updated
+                                UpdatedAt
                             </TableCell>
 
                             <TableCell
@@ -331,25 +352,31 @@ export default function PaginationTable() {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((account, index) => (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                    <TableCell align="center">{account.displayName}</TableCell>
-                                    <TableCell align="center">{account.customerEmail}</TableCell>
-                                    <TableCell align="center">{account.companyEmail}</TableCell>
-                                    <TableCell align="center">{account.plan}</TableCell>
-                                    <TableCell align="center">{account.currentEquity}</TableCell>
-                                    <TableCell align="center">{account.leverage}</TableCell>
-                                    <TableCell align="center">{account.type}</TableCell>
-                                    <TableCell align="center">{account.profitShare}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">{account.displayName}</TableCell>
+                                    <TableCell align="left">{account.customerEmail}</TableCell>
+                                    {/* <TableCell align="left">{account.companyEmail}</TableCell> */}
+                                    <TableCell align="left">{account.plan}</TableCell>
+                                    <TableCell align="left">{account.currentEquity}</TableCell>
+                                    <TableCell align="left">{account.balance}</TableCell>
+                                    <TableCell align="left">{account.dailyDrawdown}</TableCell>
+                                    <TableCell align="left">{account.leverage}</TableCell>
+                                    <TableCell align="left">{account.type}</TableCell>
+                                    <TableCell align="left">{account.profitShare}</TableCell>
+                                    <TableCell align="left">
                                         {account.allow ? 'Allow' : 'Prohibit'}
                                     </TableCell>
-                                    <TableCell align="center">{account.blockReason}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">{account.blockReason}</TableCell>
+                                    <TableCell align="left">
                                         {account.breached ? 'Breached' : 'Secured'}
                                     </TableCell>
-                                    <TableCell align="center">{account.breachedReason}</TableCell>
-                                    <TableCell align="center">{account.tradeSystem}</TableCell>
-                                    <TableCell align="center">{account.createdAt}</TableCell>
-                                    <TableCell align="center">{account.updatedAt}</TableCell>
+                                    <TableCell align="left">{account.breachedReason}</TableCell>
+                                    <TableCell align="left">{account.tradeSystem}</TableCell>
+                                    <TableCell align="left">
+                                        {formatDate(account.createdAt)}
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {formatDate(account.updatedAt)}
+                                    </TableCell>
                                     <TableCell
                                         sx={{
                                             position: 'sticky',
@@ -359,7 +386,7 @@ export default function PaginationTable() {
                                             zIndex: 1,
                                             boxShadow: '-8px 0px 20px rgba(0, 0, 0, 0.3)'
                                         }}
-                                        align="center"
+                                        align="left"
                                     >
                                         <IconButton
                                             onClick={handleClick}
@@ -553,19 +580,25 @@ export default function PaginationTable() {
                 <DialogContent>
                     <DialogContentText sx={{ color: 'white' }}></DialogContentText>
                     <ValidatorForm ref={formRef} onSubmit={handleCreateSubmit} onError={() => null}>
-                        <TextField
-                            autoFocus
-                            id="email"
-                            type="email"
-                            margin="dense"
-                            label="Customer Email Address"
-                            value={newAccount.customerEmail || ''}
-                            onChange={handleChange}
-                            name="customerEmail"
-                            validators={['required', 'isEmail']}
-                            errorMessages={['this field is required', 'email is not valid']}
-                        />
-                        <TextField
+                        <FormControl style={{ width: '100%', marginTop: '15px' }}>
+                            <SelectValidator
+                                fullWidth
+                                labelId="Customer Email Address"
+                                value={newAccount.customerEmail || ''}
+                                onChange={handleChange}
+                                label="Customer Email Address"
+                                name="customerEmail"
+                                validators={['required']}
+                                errorMessages={['This field is required']}
+                            >
+                                {customers?.map((customer, index) => (
+                                    <MenuItem key={index} value={customer.email}>
+                                        {customer.email}
+                                    </MenuItem>
+                                ))}
+                            </SelectValidator>
+                        </FormControl>
+                        {/* <TextField
                             autoFocus
                             id="email"
                             type="email"
@@ -576,31 +609,55 @@ export default function PaginationTable() {
                             name="companyEmail"
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="text"
-                            margin="dense"
-                            label="Plan"
-                            value={newAccount.planName || ''}
-                            onChange={handleChange}
-                            name="planName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
+                        /> */}
+
                         <FormControl style={{ width: '100%', marginTop: '15px' }}>
-                            <InputLabel id="tradeSystem">Trade System</InputLabel>
-                            <Select
+                            <SelectValidator
+                                fullWidth
+                                labelId="Plans"
+                                value={newAccount.planName || ''}
+                                onChange={handleChange}
+                                label="PlanName"
+                                name="planName"
+                                validators={['required']}
+                                errorMessages={['This field is required']}
+                            >
+                                {plans?.map((plan, index) => (
+                                    <MenuItem key={index} value={plan.name}>
+                                        {plan.name}
+                                    </MenuItem>
+                                ))}
+                            </SelectValidator>
+                        </FormControl>
+                        <FormControl style={{ width: '100%', marginTop: '15px' }}>
+                            <SelectValidator
+                                fullWidth
                                 labelId="tradeSystem"
                                 value={newAccount.tradeSystem || ''}
                                 onChange={handleChange}
                                 label="Trade System"
                                 name="tradeSystem"
+                                validators={['required']}
+                                errorMessages={['This field is required']}
                             >
                                 <MenuItem value={'MT4'}>MT4</MenuItem>
-                                <MenuItem value={'LaserTrader'}>LaserTrader</MenuItem>
-                            </Select>
+                                <MenuItem value={'LaserTrade'}>LaserTrade</MenuItem>
+                            </SelectValidator>
                         </FormControl>
+                        {newAccount.tradeSystem === 'MT4' && (
+                            <TextField
+                                autoFocus
+                                type="text"
+                                margin="dense"
+                                label="Display Name"
+                                value={newAccount.displayName || ''}
+                                onChange={handleChange}
+                                name="displayName"
+                                validators={['required']}
+                                errorMessages={['This field is required']}
+                                style={{ marginTop: '15px' }}
+                            />
+                        )}
                     </ValidatorForm>
                 </DialogContent>
 
@@ -641,9 +698,9 @@ export default function PaginationTable() {
                     <Typography>
                         <strong>Email:</strong> {selectedAccount.customerEmail}
                     </Typography>
-                    <Typography>
+                    {/* <Typography>
                         <strong>Company Email:</strong> {selectedAccount.companyEmail}
-                    </Typography>
+                    </Typography> */}
                     <Typography>
                         <strong>Plan:</strong> {selectedAccount.plan}
                     </Typography>
