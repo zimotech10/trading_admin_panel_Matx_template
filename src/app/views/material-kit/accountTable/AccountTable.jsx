@@ -329,7 +329,7 @@ export default function PaginationTable() {
                             <TableCell
                                 align="center"
                                 sx={{
-                                    marginLeft: '0px',
+                                    marginLeft: '20px',
                                     width: '80px',
                                     position: 'sticky',
                                     right: 0,
@@ -386,7 +386,7 @@ export default function PaginationTable() {
                                             zIndex: 1,
                                             boxShadow: '-8px 0px 20px rgba(0, 0, 0, 0.3)'
                                         }}
-                                        align="left"
+                                        align="center"
                                     >
                                         <IconButton
                                             onClick={handleClick}
