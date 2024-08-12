@@ -387,7 +387,7 @@ export default function PaginationTable() {
                                     </TableCell>
                                     <TableCell align="left">{account.blockReason}</TableCell>
                                     <TableCell align="left">
-                                        {account.breached ? 'Breached' : 'Secured'}
+                                        {account.breached ? 'Breached' : 'None'}
                                     </TableCell>
                                     <TableCell align="left">{account.breachedReason}</TableCell>
                                     <TableCell align="left">{account.tradeSystem}</TableCell>

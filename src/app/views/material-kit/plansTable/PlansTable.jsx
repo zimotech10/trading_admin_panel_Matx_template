@@ -706,6 +706,7 @@ export default function PaginationTable() {
                             name="name"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
 
                         <TextField
@@ -718,6 +719,7 @@ export default function PaginationTable() {
                             name="price"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -729,6 +731,7 @@ export default function PaginationTable() {
                             name="initialBalance"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -740,6 +743,7 @@ export default function PaginationTable() {
                             name="dailyDrawdown"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
 
                         <TextField
@@ -752,6 +756,7 @@ export default function PaginationTable() {
                             name="totalDrawdown"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -763,6 +768,7 @@ export default function PaginationTable() {
                             name="phase1"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -774,6 +780,7 @@ export default function PaginationTable() {
                             name="phase2"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -785,6 +792,7 @@ export default function PaginationTable() {
                             name="leverage"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -796,6 +804,7 @@ export default function PaginationTable() {
                             name="profitShare"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                     </ValidatorForm>
                 </DialogContent>
@@ -817,8 +826,6 @@ export default function PaginationTable() {
                         type="submit"
                         onClick={() => {
                             formRef.current.submit();
-
-                            setCreateOpen(false);
                         }}
                     >
                         <Icon>send</Icon>

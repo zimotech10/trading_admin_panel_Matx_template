@@ -1182,8 +1182,6 @@ export default function PaginationTable() {
                         type="submit"
                         onClick={() => {
                             formRef.current.submit();
-
-                            setCreateOpen(false);
                         }}
                     >
                         <Icon>send</Icon>
@@ -1219,6 +1217,7 @@ export default function PaginationTable() {
                             name="email"
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1229,9 +1228,9 @@ export default function PaginationTable() {
                             onChange={handleChangeEdit}
                             name="password"
                             // validators={['isPasswordStrong']}
-                            errorMessages={[
-                                'Password must be minimum 8 characters, including letters and numbers'
-                            ]}
+                            // errorMessages={[
+                            //     'Password must be minimum 8 characters, including letters and numbers'
+                            // ]}
                             style={{ marginRight: '4px', flex: 1 }}
                             InputProps={{
                                 endAdornment: (
@@ -1311,6 +1310,7 @@ export default function PaginationTable() {
                             name="firstName"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1320,8 +1320,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.middleName || ''}
                             onChange={handleChangeEdit}
                             name="middleName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1333,6 +1333,7 @@ export default function PaginationTable() {
                             name="lastName"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1344,6 +1345,7 @@ export default function PaginationTable() {
                             name="nickName"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             id="birthday"
@@ -1359,6 +1361,7 @@ export default function PaginationTable() {
                             validators={['required']}
                             errorMessages={['this field is required']}
                             variant="outlined"
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1370,6 +1373,7 @@ export default function PaginationTable() {
                             name="accounts"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1381,6 +1385,7 @@ export default function PaginationTable() {
                             name="orders"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1390,8 +1395,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.referrals}
                             onChange={handleChangeEdit}
                             name="referrals"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <FormControl style={{ width: '100%' }}>
                             <InputLabel id="language-label">Language</InputLabel>
@@ -1416,6 +1421,7 @@ export default function PaginationTable() {
                             name="phone"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1425,8 +1431,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.externalID1 || ''}
                             onChange={handleChangeEdit}
                             name="externalID1"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1436,8 +1442,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.externalID2 || ''}
                             onChange={handleChangeEdit}
                             name="externalID2"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <FormControl style={{ width: '100%' }}>
                             <InputLabel id="language-label">Status</InputLabel>
@@ -1447,6 +1453,7 @@ export default function PaginationTable() {
                                 onChange={handleChangeEdit}
                                 label="Status"
                                 name="status"
+                                required
                             >
                                 <MenuItem value={'allow'}>Allow</MenuItem>
                                 <MenuItem value={'pending'}>Pending</MenuItem>
@@ -1472,8 +1479,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.agreementID || ''}
                             onChange={handleChangeEdit}
                             name="agreementID"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1483,8 +1490,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.agreementIP || ''}
                             onChange={handleChangeEdit}
                             name="agreementIP"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1494,8 +1501,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.agreementLegalName || ''}
                             onChange={handleChangeEdit}
                             name="agreementLegalName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1505,8 +1512,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.agreementTs || ''}
                             onChange={handleChangeEdit}
                             name="agreementTs"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1518,6 +1525,7 @@ export default function PaginationTable() {
                             name="country"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1529,6 +1537,7 @@ export default function PaginationTable() {
                             name="state"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1540,6 +1549,7 @@ export default function PaginationTable() {
                             name="city"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1551,6 +1561,7 @@ export default function PaginationTable() {
                             name="zip"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1562,6 +1573,7 @@ export default function PaginationTable() {
                             name="addressLine1"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1571,8 +1583,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.addressLine2 || ''}
                             onChange={handleChangeEdit}
                             name="addressLine2"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1582,8 +1594,8 @@ export default function PaginationTable() {
                             value={seletedCustomer?.addressLine3 || ''}
                             onChange={handleChangeEdit}
                             name="addressLine3"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                     </ValidatorForm>
                 </DialogContent>
