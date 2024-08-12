@@ -1,9 +1,20 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Card, Checkbox, Grid, TextField, Box, styled, useTheme } from '@mui/material';
+import {
+    Card,
+    Checkbox,
+    Grid,
+    TextField,
+    Box,
+    styled,
+    useTheme,
+    InputAdornment,
+    IconButton
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import useAuth from 'app/hooks/useAuth';
 import { Paragraph } from 'app/components/Typography';
@@ -64,8 +75,16 @@ export default function JwtLogin() {
     const theme = useTheme();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const { login } = useAuth();
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const handleFormSubmit = async (values) => {
         setLoading(true);
@@ -126,7 +145,7 @@ export default function JwtLogin() {
                                             fullWidth
                                             size="small"
                                             name="password"
-                                            type="password"
+                                            type={showPassword ? 'text' : 'password'}
                                             label="Password"
                                             variant="outlined"
                                             onBlur={handleBlur}
@@ -135,6 +154,24 @@ export default function JwtLogin() {
                                             helperText={touched.password && errors.password}
                                             error={Boolean(errors.password && touched.password)}
                                             sx={{ mb: 1.5 }}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? (
+                                                                <VisibilityOff />
+                                                            ) : (
+                                                                <Visibility />
+                                                            )}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            }}
                                         />
 
                                         <FlexBox justifyContent="space-between">

@@ -71,7 +71,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 const StyledTable = styled(Table)(() => ({
     whiteSpace: 'pre',
     '& thead': {
-        '& tr': { '& th': { paddingLeft: 20, paddingRight: 0, fontSize: 18, color: 'blue' } }
+        '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue' } }
     },
     '& tbody': {
         '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize', fontWeight: 'bold' } }
@@ -390,20 +390,20 @@ export default function PaginationTable() {
                 <StyledTable stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left" sx={{ width: '120px' }}>
+                            <TableCell align="left" sx={{ width: '200px' }}>
                                 Email
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                First &nbsp; Name
+                            <TableCell align="left" sx={{ width: '100px' }}>
+                                FirstName
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Middle &nbsp; Name
+                            <TableCell align="left" sx={{ width: '120px' }}>
+                                MiddleName
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Last &nbsp; Name
+                            <TableCell align="left" sx={{ width: '120px' }}>
+                                LastName
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '80px' }}>
-                                Nick &nbsp; Name
+                            <TableCell align="left" sx={{ width: '120px' }}>
+                                NickName
                             </TableCell>
                             <TableCell align="left" sx={{ width: '85px' }}>
                                 Birth
@@ -423,17 +423,17 @@ export default function PaginationTable() {
                             <TableCell align="left" sx={{ width: '140px' }}>
                                 Phone
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                External ld1
+                            <TableCell align="left" sx={{ width: '120px' }}>
+                                Externalld1
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                External ld2
+                            <TableCell align="left" sx={{ width: '120px' }}>
+                                Externalld2
                             </TableCell>
                             <TableCell align="left" sx={{ width: '90px' }}>
                                 Status
                             </TableCell>
                             <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement Signed
+                                Agreement &nbsp;&nbsp;&nbsp; Signed
                             </TableCell>
                             <TableCell align="left" sx={{ width: '120px' }}>
                                 Agreement ID
@@ -442,16 +442,16 @@ export default function PaginationTable() {
                                 Agreement IP
                             </TableCell>
                             <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement LegalName
+                                Agreement &nbsp;&nbsp;&nbsp; LegalName
                             </TableCell>
                             <TableCell align="left" sx={{ width: '120px' }}>
-                                Agreement Ts
+                                AgreementTs
                             </TableCell>
                             <TableCell align="left" sx={{ width: '85px', paddingLeft: '20px' }}>
                                 Created
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Last &nbsp;&nbsp;&nbsp; Updated
+                            <TableCell align="left" sx={{ width: '120px' }}>
+                                LastUpdated
                             </TableCell>
                             <TableCell align="left" sx={{ width: '80px' }}>
                                 Active
@@ -504,56 +504,56 @@ export default function PaginationTable() {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((customer, index) => (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                    <TableCell align="center">{customer.email}</TableCell>
-                                    <TableCell align="center">{customer.firstName}</TableCell>
-                                    <TableCell align="center">{customer.middleName}</TableCell>
-                                    <TableCell align="center">{customer.lastName}</TableCell>
-                                    <TableCell align="center">{customer.nickName}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">{customer.email}</TableCell>
+                                    <TableCell align="left">{customer.firstName}</TableCell>
+                                    <TableCell align="left">{customer.middleName}</TableCell>
+                                    <TableCell align="left">{customer.lastName}</TableCell>
+                                    <TableCell align="left">{customer.nickName}</TableCell>
+                                    <TableCell align="left">
                                         {formatDate(customer.birthday)}
                                     </TableCell>
-                                    <TableCell align="center">{customer.accounts}</TableCell>
-                                    <TableCell align="center">{customer.orders}</TableCell>
-                                    <TableCell align="center">{customer.referrals}</TableCell>
-                                    <TableCell align="center">{customer.language}</TableCell>
-                                    <TableCell align="center">{customer.phone}</TableCell>
-                                    <TableCell align="center">{customer.externalID1}</TableCell>
-                                    <TableCell align="center">{customer.externalID2}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">{customer.accounts}</TableCell>
+                                    <TableCell align="left">{customer.orders}</TableCell>
+                                    <TableCell align="left">{customer.referrals}</TableCell>
+                                    <TableCell align="left">{customer.language}</TableCell>
+                                    <TableCell align="left">{customer.phone}</TableCell>
+                                    <TableCell align="left">{customer.externalID1}</TableCell>
+                                    <TableCell align="left">{customer.externalID2}</TableCell>
+                                    <TableCell align="left">
                                         {renderStatusChip(customer?.status)}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">
                                         {' '}
                                         <Checkbox checked={customer.agreementSigned} />
                                     </TableCell>
-                                    <TableCell align="center">{customer.agreementId}</TableCell>
-                                    <TableCell align="center">{customer.agreementIP}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">{customer.agreementId}</TableCell>
+                                    <TableCell align="left">{customer.agreementIP}</TableCell>
+                                    <TableCell align="left">
                                         {customer.agreementLegalName}
                                     </TableCell>
-                                    <TableCell align="center">{customer.agreementTs}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">{customer.agreementTs}</TableCell>
+                                    <TableCell align="left">
                                         {formatDate(customer.createdAt)}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">
                                         {formatDate(customer.updatedAt)}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="left">
                                         <Radio
                                             checked={customer.active}
                                             name="radio-buttons"
                                             inputProps={{ 'aria-label': 'A' }}
                                         />
                                     </TableCell>
-                                    <TableCell align="center" sx={{ fontSize: 12 }}>
+                                    <TableCell align="left" sx={{ fontSize: 12 }}>
                                         {customer.country}
                                     </TableCell>
-                                    <TableCell align="center">{customer.state}</TableCell>
-                                    <TableCell align="center">{customer.city}</TableCell>
-                                    <TableCell align="center">{customer.zip}</TableCell>
-                                    <TableCell align="center">{customer.addressLine1}</TableCell>
-                                    <TableCell align="center">{customer.addressLine2}</TableCell>
-                                    <TableCell align="center">{customer.addressLine3}</TableCell>
+                                    <TableCell align="left">{customer.state}</TableCell>
+                                    <TableCell align="left">{customer.city}</TableCell>
+                                    <TableCell align="left">{customer.zip}</TableCell>
+                                    <TableCell align="left">{customer.addressLine1}</TableCell>
+                                    <TableCell align="left">{customer.addressLine2}</TableCell>
+                                    <TableCell align="left">{customer.addressLine3}</TableCell>
 
                                     <TableCell
                                         sx={{
