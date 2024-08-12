@@ -248,7 +248,7 @@ export default function PaginationTable() {
                 fetchCustomer();
                 showSnackbar('Create Account successfully', 'success');
             })
-            .catch((err) => {
+            .catch((error) => {
                 if (error.response) {
                     if (error.response.status === 401) {
                         console.error('Unauthorized! Please log in again.');
