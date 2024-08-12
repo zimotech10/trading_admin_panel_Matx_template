@@ -313,7 +313,7 @@ export default function PaginationTable() {
                                 Balance
                             </TableCell>
                             <TableCell align="left" sx={{ width: '150px' }}>
-                                DailyDrawdown
+                                Drawdown
                             </TableCell>
                             <TableCell align="left" sx={{ width: '110px' }}>
                                 Leverage
@@ -378,7 +378,7 @@ export default function PaginationTable() {
                                     <TableCell align="left">{account.plan}</TableCell>
                                     <TableCell align="left">{account.currentEquity}</TableCell>
                                     <TableCell align="left">{account.balance}</TableCell>
-                                    <TableCell align="left">{account.dailyDrawdown}</TableCell>
+                                    <TableCell align="left">{account.currentDrawdown}</TableCell>
                                     <TableCell align="left">{account.leverage}</TableCell>
                                     <TableCell align="left">{account.type}</TableCell>
                                     <TableCell align="left">{account.profitShare}</TableCell>
