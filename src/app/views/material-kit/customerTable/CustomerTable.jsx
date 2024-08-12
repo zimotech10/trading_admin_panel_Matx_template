@@ -533,7 +533,12 @@ export default function PaginationTable() {
                                     </TableCell>
                                     <TableCell align="left">
                                         {' '}
-                                        <Checkbox checked={customer.agreementSigned} />
+
+                                        {seletedCustomer?.agreementSigned ? (
+                                            <Chip label="SIGNED" color="success" variant="outlined" />
+                                        ) : (
+                                            <Chip label="NOT" color="default" variant="outlined" />
+                                        )}
                                     </TableCell>
                                     <TableCell align="left">{customer.agreementId}</TableCell>
                                     <TableCell align="left">{customer.agreementIP}</TableCell>
@@ -548,11 +553,11 @@ export default function PaginationTable() {
                                         {formatDate(customer.updatedAt)}
                                     </TableCell>
                                     <TableCell align="left">
-                                        <Radio
-                                            checked={customer.active}
-                                            name="radio-buttons"
-                                            inputProps={{ 'aria-label': 'A' }}
-                                        />
+                                        {seletedCustomer?.active ? (
+                                            <Chip label="ACTIVE" color="success" variant="outlined" />
+                                        ) : (
+                                            <Chip label="NOT" color="default" variant="outlined" />
+                                        )}
                                     </TableCell>
                                     <TableCell align="left" sx={{ fontSize: 12 }}>
                                         {customer.country}
@@ -1646,7 +1651,7 @@ export default function PaginationTable() {
                         {renderStatusChip(seletedCustomer?.status)}
                     </Typography>
                     <Typography>
-                        <strong>Status:</strong> &nbsp;&nbsp;
+                        <strong>Agreement Signed:</strong> &nbsp;&nbsp;
                         {seletedCustomer?.agreementSigned ? (
                             <Chip label="SIGNED" color="success" variant="outlined" />
                         ) : (
