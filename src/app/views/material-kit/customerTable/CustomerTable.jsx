@@ -849,6 +849,7 @@ export default function PaginationTable() {
                             name="email"
                             validators={['required', 'isEmail']}
                             errorMessages={['this field is required', 'email is not valid']}
+                            required
                         />
 
                         <FormControlLabel
@@ -871,6 +872,7 @@ export default function PaginationTable() {
                             name="firstName"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -880,8 +882,8 @@ export default function PaginationTable() {
                             value={newCustomer.middleName || ''}
                             onChange={handleChange}
                             name="middleName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -893,6 +895,7 @@ export default function PaginationTable() {
                             name="lastName"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -904,6 +907,7 @@ export default function PaginationTable() {
                             name="nickName"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             id="birthday"
@@ -919,6 +923,7 @@ export default function PaginationTable() {
                             validators={['required']}
                             errorMessages={['this field is required']}
                             variant="outlined"
+                            required
                         />
                         <TextField
                             autoFocus
@@ -930,6 +935,7 @@ export default function PaginationTable() {
                             name="accounts"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -941,6 +947,7 @@ export default function PaginationTable() {
                             name="orders"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -950,8 +957,8 @@ export default function PaginationTable() {
                             value={newCustomer.referrals || ''}
                             onChange={handleChange}
                             name="referrals"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <FormControl style={{ width: '100%' }}>
                             <InputLabel id="language-label">Language</InputLabel>
@@ -960,6 +967,7 @@ export default function PaginationTable() {
                                 value={newCustomer.language || ''}
                                 onChange={handleChange}
                                 label="Language"
+                                required
                             >
                                 <MenuItem value=""></MenuItem>
                                 <MenuItem value={'en'}>English</MenuItem>
@@ -976,6 +984,7 @@ export default function PaginationTable() {
                             name="phone"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -985,8 +994,8 @@ export default function PaginationTable() {
                             value={newCustomer.externalID1 || ''}
                             onChange={handleChange}
                             name="externalID1"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -996,8 +1005,8 @@ export default function PaginationTable() {
                             value={newCustomer.externalID2 || ''}
                             onChange={handleChange}
                             name="externalID2"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <FormControl style={{ width: '100%' }}>
                             <InputLabel id="language-label">Status</InputLabel>
@@ -1007,6 +1016,7 @@ export default function PaginationTable() {
                                 onChange={handleChange}
                                 label="Status"
                                 name="status"
+                                required
                             >
                                 <MenuItem value={'allow'}>Allow</MenuItem>
                                 <MenuItem value={'pending'}>Pending</MenuItem>
@@ -1032,8 +1042,9 @@ export default function PaginationTable() {
                             value={newCustomer.agreementID || ''}
                             onChange={handleChange}
                             name="agreementID"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
+
                         />
                         <TextField
                             autoFocus
@@ -1043,8 +1054,8 @@ export default function PaginationTable() {
                             value={newCustomer.agreementIP || ''}
                             onChange={handleChange}
                             name="agreementIP"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1054,8 +1065,8 @@ export default function PaginationTable() {
                             value={newCustomer.agreementLegalName || ''}
                             onChange={handleChange}
                             name="agreementLegalName"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1065,8 +1076,8 @@ export default function PaginationTable() {
                             value={newCustomer.agreementTs || ''}
                             onChange={handleChange}
                             name="agreementTs"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1078,6 +1089,7 @@ export default function PaginationTable() {
                             name="country"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1089,6 +1101,7 @@ export default function PaginationTable() {
                             name="state"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1100,6 +1113,7 @@ export default function PaginationTable() {
                             name="city"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1111,6 +1125,7 @@ export default function PaginationTable() {
                             name="zip"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1122,6 +1137,7 @@ export default function PaginationTable() {
                             name="addressLine1"
                             validators={['required']}
                             errorMessages={['this field is required']}
+                            required
                         />
                         <TextField
                             autoFocus
@@ -1131,8 +1147,8 @@ export default function PaginationTable() {
                             value={newCustomer.addressLine2 || ''}
                             onChange={handleChange}
                             name="addressLine2"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                         <TextField
                             autoFocus
@@ -1142,8 +1158,8 @@ export default function PaginationTable() {
                             value={newCustomer.addressLine3 || ''}
                             onChange={handleChange}
                             name="addressLine3"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
+                            validators={[]}
+                            errorMessages={[]}
                         />
                     </ValidatorForm>
                 </DialogContent>
