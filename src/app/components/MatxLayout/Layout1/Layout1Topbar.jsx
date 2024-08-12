@@ -10,8 +10,8 @@ import {
   IconButton,
   useMediaQuery
 } from "@mui/material";
-import RefreshIcon from '@mui/icons-material/Refresh';
-import Button from '@mui/material/Button';
+
+
 
 import { NotificationProvider } from "app/contexts/NotificationContext";
 
@@ -25,6 +25,7 @@ import { NotificationBar } from "app/components/NotificationBar";
 import { themeShadows } from "app/components/MatxTheme/themeColors";
 
 import { topBarHeight } from "app/utils/constant";
+import axios from "axios";
 
 import {
   Home,
@@ -111,6 +112,7 @@ const Layout1Topbar = () => {
     updateSidebarMode({ mode });
   };
 
+
   return (
     <TopbarRoot>
       <TopbarContainer>
@@ -135,11 +137,7 @@ const Layout1Topbar = () => {
         </Box>
 
         <Box display="flex" alignItems="center">
-          <Button sx={{ background: '#4A76ED', color: '#E6E6E6' }} onClick={() => {
-            window.location.reload();
-          }} variant="contained" color="primary" startIcon={<RefreshIcon />}>
-            Refresh
-          </Button>
+
           <MatxSearchBox />
 
           <NotificationProvider>
