@@ -8,10 +8,9 @@ import { AuthProvider } from './contexts/JWTAuthContext';
 import SettingsProvider from './contexts/SettingsContext';
 // ROUTES
 import routes from './routes';
+import config from '../config';
 // FAKE SERVER
 // import '../fake-db';
-import axios from 'axios';
-axios.defaults.baseURL = 'http://192.168.11.22:8001';
 
 export default function App() {
     const content = useRoutes(routes);

@@ -71,10 +71,10 @@ const Transition = forwardRef(function Transition(props, ref) {
 const StyledTable = styled(Table)(() => ({
     whiteSpace: 'pre',
     '& thead': {
-        '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue' } }
+        '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue', textTransform: "none" } }
     },
     '& tbody': {
-        '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize', fontWeight: 'bold' } }
+        '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize', fontWeight: 'bold', textTransform: "none" } }
     }
 }));
 

@@ -38,7 +38,7 @@ export default function UpgradeCard() {
           size="large"
           color="primary"
           variant="contained"
-          sx={{ textTransform: "uppercase" }}>
+          sx={{ textTransform: "none" }}>
           upgrade now
         </Button>
       </StyledCard>

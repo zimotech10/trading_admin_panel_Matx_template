@@ -2,6 +2,7 @@ import { Box, styled } from '@mui/material';
 import CustomerTable from './CustomerTable';
 import { Breadcrumb, SimpleCard } from 'app/components';
 
+
 // STYLED COMPONENTS
 const Container = styled('div')(({ theme }) => ({
     margin: '30px',

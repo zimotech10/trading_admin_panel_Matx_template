@@ -12,7 +12,7 @@ const ListLabel = styled(Paragraph)(({ theme, mode }) => ({
   marginTop: "20px",
   marginLeft: "15px",
   marginBottom: "10px",
-  textTransform: "uppercase",
+  textTransform: "none",
   display: mode === "compact" && "none",
   color: theme.palette.text.secondary
 }));

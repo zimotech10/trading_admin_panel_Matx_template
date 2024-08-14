@@ -1,2 +1,2 @@
-const SERVER_URL = 'http://192.168.1.14:8888/api';
-export default SERVER_URL;
+import axios from 'axios';
+axios.defaults.baseURL = 'http://192.168.11.22:8001';
