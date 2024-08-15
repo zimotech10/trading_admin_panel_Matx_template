@@ -1,5 +1,5 @@
 export const navigations = [
-    { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
+    // { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
     { name: 'Customers', icon: 'people', path: '/material/customerTable', iconText: 'T' },
     { name: 'Accounts', icon: 'contacts', path: '/material/accountTable', iconText: 'T' },
     { name: 'Plans', icon: 'description', path: '/material/plansTable', iconText: 'T' }

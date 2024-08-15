@@ -17,7 +17,9 @@ const ForgotPassword = Loadable(lazy(() => import('app/views/sessions/ForgotPass
 // E-CHART PAGE
 const AppEchart = Loadable(lazy(() => import('app/views/charts/echarts/AppEchart')));
 // DASHBOARD PAGE
-const Analytics = Loadable(lazy(() => import('app/views/dashboard/Analytics')));
+// const Analytics = Loadable(lazy(() => import('app/views/dashboard/Analytics')));
+//CUSTOMER TABLE
+const Customers = Loadable(lazy(() => import('app/views/material-kit/customerTable/AppTable')));
 
 const routes = [
     {
@@ -29,9 +31,10 @@ const routes = [
         children: [
             ...materialRoutes,
             // dashboard route
-            { path: '/dashboard', element: <Analytics />, auth: authRoles.admin },
+            // { path: '/dashboard', element: <Analytics />, auth: authRoles.admin },
             // e-chart route
-            { path: '/charts/echarts', element: <AppEchart />, auth: authRoles.editor }
+            { path: '/charts/echarts', element: <AppEchart />, auth: authRoles.editor },
+            { path: '/material/customerTable', element: <Customers />, auth: authRoles.editor }
         ]
     },
 
@@ -41,7 +44,7 @@ const routes = [
     { path: '/session/signup', element: <JwtRegister /> },
     { path: '/session/forgot-password', element: <ForgotPassword /> },
 
-    { path: '/', element: <Navigate to="dashboard" /> },
+    { path: '/', element: <Navigate to="/material/customerTable" /> },
     { path: '*', element: <NotFound /> }
 ];
 
