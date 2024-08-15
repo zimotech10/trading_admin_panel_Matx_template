@@ -703,8 +703,8 @@ export default function PaginationTable() {
                                 errorMessages={['This field is required']}
                             >
                                 {plans?.map((plan, index) => (
-                                    <MenuItem key={index} value={plan.name}>
-                                        {plan.name}
+                                    <MenuItem key={index} value={plan.planName}>
+                                        {plan.planName}
                                     </MenuItem>
                                 ))}
                             </SelectValidator>
