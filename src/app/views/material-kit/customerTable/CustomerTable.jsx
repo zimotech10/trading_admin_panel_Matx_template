@@ -10,13 +10,9 @@ import {
     FormControlLabel,
     FormControl,
     InputLabel,
-    Grid,
-    Radio,
-    RadioGroup,
     Switch,
     Checkbox,
     Select,
-    Box,
     InputAdornment,
     Chip,
     Typography
@@ -39,15 +35,12 @@ import { alpha } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EmailIcon from '@mui/icons-material/Email';
 import AddIcon from '@mui/icons-material/Add';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import BlockIcon from '@mui/icons-material/Block';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -234,6 +227,7 @@ export default function PaginationTable() {
 
     useEffect(() => {
         fetchCustomer();
+        // eslint-disable-next-line
     }, []);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -377,7 +371,6 @@ export default function PaginationTable() {
         return `${year}-${month}-${day}`;
     };
 
-    const handleDateChange = (birthday) => setNewCustomer({ ...newCustomer, birthday });
 
     function renderStatusChip(status) {
         switch (status) {

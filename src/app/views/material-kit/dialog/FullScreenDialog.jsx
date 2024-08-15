@@ -3,7 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useState } from 'react';
 import { useTheme } from '@mui/material';
 import List from '@mui/material/List';
 import Dialog from '@mui/material/Dialog';

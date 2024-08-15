@@ -9,17 +9,9 @@ import {
     useTheme,
     FormControlLabel,
     FormControl,
-    InputLabel,
-    Grid,
-    Radio,
-    RadioGroup,
-    Switch,
     Checkbox,
     Select,
-    Box,
-    InputAdornment,
-    Chip,
-    Typography
+
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
@@ -56,7 +48,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import AddCircleIcon from '@mui/icons-material/AddCircleOutline';
@@ -70,8 +61,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { H6 } from 'app/components/Typography';
 
 import { Span } from 'app/components/Typography';
-import { Height } from '@mui/icons-material';
-import { values } from 'lodash';
+
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -188,17 +178,13 @@ export default function PaginationTable() {
     const [openReplace, setReplaceOpen] = useState(false);
     const [openDisable, setDisableOpen] = useState(false);
     const [openRemove, setRemoveOpen] = useState(false);
-    const [openEdit, setEditOpen] = useState(false);
     const [openView, setViewOpen] = useState(false);
     const [openCreate, setCreateOpen] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const [phaseOpen, setPhaseOpen] = useState(false);
     const [editPhaseOpen, setEditPhaseOpen] = useState(false);
 
 
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
+
     const cleanNewPlan = () => {
         console.log('clean');
         setNewPlan({
@@ -223,31 +209,14 @@ export default function PaginationTable() {
 
         });
     };
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
+
 
     const handleCreateOpen = () => setCreateOpen(true);
 
-    // To validation wether password same as confirmPassword, uncommit this useEffect function
-    useEffect(() => {
-        // ValidatorForm.addValidationRule('isPasswordStrong', (value) => {
-        //     return value.length >= 8 && /\d/.test(value) && /[a-zA-Z]/.test(value);
-        // });
-
-        // Password match validator
-        ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-            return value === newPlan.password;
-        });
-
-        return () => {
-            // ValidatorForm.removeValidationRule('isPasswordStrong');
-            ValidatorForm.removeValidationRule('isPasswordMatch');
-        };
-    }, [selectedPlan?.password]);
 
     useEffect(() => {
         fetchPlan();
+        // eslint-disable-next-line   
     }, []);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -317,7 +286,7 @@ export default function PaginationTable() {
     }
     const handleSubmit = () => {
         const { phaseName, initialBalance, initialLeverage, maxDailyLoss, maxLoss, profitTarget } = newPlan.phases[newPlan.phases.length - 1];
-        if (phaseName == '' && initialBalance == '' && initialLeverage == '' && maxDailyLoss == '' && maxLoss == '' && profitTarget == '') {
+        if (phaseName === '' && initialBalance === '' && initialLeverage === '' && maxDailyLoss === '' && maxLoss === '' && profitTarget === '') {
             showSnackbar("Confirm your inputs! Is there any missing?", 'error');
             return;
         }
@@ -344,7 +313,7 @@ export default function PaginationTable() {
     };
     const handleSubmitEdit = () => {
         const { phaseName, initialBalance, initialLeverage, maxDailyLoss, maxLoss, profitTarget } = selectedPlan.phases[selectedPlan.phases.length - 1];
-        if (phaseName == '' && initialBalance == '' && initialLeverage == '' && maxDailyLoss == '' && maxLoss == '' && profitTarget == '') {
+        if (phaseName === '' && initialBalance === '' && initialLeverage === '' && maxDailyLoss === '' && maxLoss === '' && profitTarget === '') {
             showSnackbar("Confirm your inputs! Is there any missing?", 'error');
             return;
         }
