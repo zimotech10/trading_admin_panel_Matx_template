@@ -75,7 +75,7 @@ const StyledTable = styled(Table)(() => ({
         '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue', textTransform: "none" } }
     },
     '& tbody': {
-        '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize', fontWeight: 'bold', textTransform: "none" } }
+        '& tr': { '& td': { paddingLeft: 0, fontWeight: 'bold', textTransform: "none" } }
     }
 }));
 

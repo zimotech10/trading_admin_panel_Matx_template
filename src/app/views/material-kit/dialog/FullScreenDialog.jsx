@@ -1,8 +1,9 @@
+
 import CloseIcon from '@mui/icons-material/Close';
 import { Box } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, useEffect } from 'react';
 import { useTheme } from '@mui/material';
 import List from '@mui/material/List';
 import Dialog from '@mui/material/Dialog';
@@ -18,7 +19,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function FullScreenDialog() {
+export default function FullScreenDialog({ openOP }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -31,7 +32,7 @@ export default function FullScreenDialog() {
         Open full-screen dialog
       </Button>
 
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition} >
         <AppBar sx={{ position: 'relative' }}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="Close">

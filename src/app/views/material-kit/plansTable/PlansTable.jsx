@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
-
+import { SimpleCard } from 'app/components';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -38,15 +38,14 @@ import { alpha } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
-import ArchiveIcon from '@mui/icons-material/Archive';
+
 import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EmailIcon from '@mui/icons-material/Email';
 import AddIcon from '@mui/icons-material/Add';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import BlockIcon from '@mui/icons-material/Block';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -59,9 +58,20 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+
+import AddCircleIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+
+import CloseIcon from '@mui/icons-material/Close';
+import AppBar from '@mui/material/AppBar';
+
+
+import Toolbar from '@mui/material/Toolbar';
+import { H6 } from 'app/components/Typography';
 
 import { Span } from 'app/components/Typography';
+import { Height } from '@mui/icons-material';
+import { values } from 'lodash';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -71,10 +81,21 @@ const Transition = forwardRef(function Transition(props, ref) {
 const StyledTable = styled(Table)(() => ({
     whiteSpace: 'pre',
     '& thead': {
-        '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue', textTransform: "none" } }
+        '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue', textTransform: "none", } }
     },
     '& tbody': {
-        '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize', fontWeight: 'bold', textTransform: "none" } }
+        '& tr': { '& td': { paddingLeft: 0, fontWeight: 'bold', textTransform: "none", } }
+    }
+}));
+const StyledTable1 = styled(Table)(() => ({
+    whiteSpace: 'pre',
+    width: 'auto', // Set the table width to auto
+    tableLayout: 'auto', // Allow the table to adjust its layout based on content
+    '& thead': {
+        '& tr': { '& th': { paddingLeft: 0, paddingRight: 0, fontSize: 18, color: 'blue', textTransform: "none", border: '1px solid #ccc', } }
+    },
+    '& tbody': {
+        '& tr': { '& td': { paddingTop: '0px', paddingLeft: 10, fontWeight: 'bold', textTransform: "none", border: '1px solid #ccc', } }
     }
 }));
 
@@ -120,7 +141,14 @@ const StyledMenu = styled((props) => (
 
 const TextField = styled(TextValidator)(() => ({
     width: '100%',
-    marginBottom: '16px'
+    '& .MuiInputBase-root': {
+        height: 38,  // Set height for the input base
+        padding: '2px 4px',  // Adjust padding
+    },
+    '& .MuiInputBase-input': {
+        height: '100%',  // Match the height of the input element
+        boxSizing: 'border-box',  // Ensure box model is correct
+    },
 }));
 
 export default function PaginationTable() {
@@ -129,20 +157,28 @@ export default function PaginationTable() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-    const [selectedPlan, setSelectedCusomer] = useState(null);
+    const [selectedPlan, setSelectedPlan] = useState(null);
     const [plans, setPlans] = useState([]);
     const [newPlan, setNewPlan] = useState({
-        name: '',
-        price: '',
-        initialBalance: '',
-        dailyDrawdown: '',
-        totalDrawdown: '',
-        phase1: '',
-        phase2: '',
-        leverage: '',
-        profitShare: '',
-        createdAt: '',
-        updatedAt: ''
+        planName: '',
+        planPrice: '',
+        phases: [
+            {
+                phaseName: '',
+                fundedPhase: false,
+                initialBalance: '',
+                initialLeverage: '',
+                tradingPeriod: '',
+                minTradingDays: '',
+                maxDailyLoss: '',
+                maxDailyLossType: 'staticDrawdown',
+                maxLoss: '',
+                profitTarget: '',
+                profitSplitBroker: '50',
+            }
+
+        ]
+
     });
     const formRef = useRef(null);
     const token = localStorage.getItem('token');
@@ -156,6 +192,9 @@ export default function PaginationTable() {
     const [openView, setViewOpen] = useState(false);
     const [openCreate, setCreateOpen] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [phaseOpen, setPhaseOpen] = useState(false);
+    const [editPhaseOpen, setEditPhaseOpen] = useState(false);
+
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -163,17 +202,25 @@ export default function PaginationTable() {
     const cleanNewPlan = () => {
         console.log('clean');
         setNewPlan({
-            name: '',
-            price: '',
-            initialBalance: '',
-            dailyDrawdown: '',
-            totalDrawdown: '',
-            phase1: '',
-            phase2: '',
-            leverage: '',
-            profitShare: '',
-            createdAt: '',
-            updatedAt: ''
+            planName: '',
+            planPrice: '',
+            phases: [
+                {
+                    phaseName: '',
+                    fundedPhase: false,
+                    initialBalance: '',
+                    initialLeverage: '',
+                    tradingPeriod: '',
+                    minTradingDays: '',
+                    maxDailyLoss: '',
+                    maxDailyLossType: 'staticDrawdown',
+                    maxLoss: '',
+                    profitTarget: '',
+                    profitSplitBroker: '50',
+                }
+
+            ]
+
         });
     };
     const handleMouseDownPassword = (event) => {
@@ -254,8 +301,27 @@ export default function PaginationTable() {
     };
 
     //form OPs
+    const createPlan = () => {
+        setCreateOpen(false);
+        setPhaseOpen(true);
+    }
+
+    const closePhase = () => {
+        setPhaseOpen(false);
+    }
+    const closeEditPhase = () => {
+        setEditPhaseOpen(false);
+    }
+    const closeViewPhase = () => {
+        setViewOpen(false);
+    }
     const handleSubmit = () => {
-        console.log(newPlan);
+        const { phaseName, initialBalance, initialLeverage, maxDailyLoss, maxLoss, profitTarget } = newPlan.phases[newPlan.phases.length - 1];
+        if (phaseName == '' && initialBalance == '' && initialLeverage == '' && maxDailyLoss == '' && maxLoss == '' && profitTarget == '') {
+            showSnackbar("Confirm your inputs! Is there any missing?", 'error');
+            return;
+        }
+
         axios
             .post('/createPlan', newPlan, {
                 headers: {
@@ -263,20 +329,29 @@ export default function PaginationTable() {
                 }
             })
             .then((res) => {
+                console.log(res)
                 showSnackbar(res.data.messages, 'success');
+                cleanNewPlan();
+                setPhaseOpen(false);
                 fetchPlan();
             })
             .catch((error) => {
+                showSnackbar(error.response.data.message, 'error');
                 return;
             });
-        setCreateOpen(false);
-        cleanNewPlan();
+
+
     };
     const handleSubmitEdit = () => {
+        const { phaseName, initialBalance, initialLeverage, maxDailyLoss, maxLoss, profitTarget } = selectedPlan.phases[selectedPlan.phases.length - 1];
+        if (phaseName == '' && initialBalance == '' && initialLeverage == '' && maxDailyLoss == '' && maxLoss == '' && profitTarget == '') {
+            showSnackbar("Confirm your inputs! Is there any missing?", 'error');
+            return;
+        }
         axios
             .post(
                 '/updatePlan',
-                { ...selectedPlan, planId: selectedPlan.id },
+                { ...selectedPlan },
                 {
                     headers: {
                         Authorization: token
@@ -285,9 +360,11 @@ export default function PaginationTable() {
             )
             .then((res) => {
                 fetchPlan();
-                showSnackbar(res.data.messages, 'success');
+                setEditPhaseOpen(false);
+                showSnackbar(res.data.message, 'success');
             })
             .catch((error) => {
+                showSnackbar(error.response.data.message, 'error');
                 return;
             });
     };
@@ -295,7 +372,7 @@ export default function PaginationTable() {
         axios
             .post(
                 '/deletePlan',
-                { planId: id },
+                { planID: id },
                 {
                     headers: {
                         Authorization: token
@@ -304,9 +381,10 @@ export default function PaginationTable() {
             )
             .then((res) => {
                 fetchPlan();
-                showSnackbar(res.data.messages, 'success');
+                showSnackbar(res.data.message, 'success');
             })
             .catch((error) => {
+                showSnackbar(error.response.data.message, 'error');
                 return;
             });
     };
@@ -314,9 +392,69 @@ export default function PaginationTable() {
     const handleChange = (event) => {
         setNewPlan({ ...newPlan, [event.target.name]: event.target.value });
     };
-    const handleChangeEdit = (event) => {
-        setSelectedCusomer({ ...selectedPlan, [event.target.name]: event.target.value });
+    const handleDetailChange = (event, index) => {
+        const { name, value } = event.target;
+        if (name === 'fundedPhase') {
+            setNewPlan((prevPlan) => {
+                const updatedPhases = [...prevPlan.phases];
+                updatedPhases[index] = {
+                    ...updatedPhases[index],
+                    [name]: event.target.checked,
+                };
+
+                return {
+                    ...prevPlan,
+                    phases: updatedPhases,
+                };
+            })
+            return;
+        }
+        setNewPlan((prevPlan) => {
+            const updatedPhases = [...prevPlan.phases];
+            updatedPhases[index] = {
+                ...updatedPhases[index],
+                [name]: value,
+            };
+
+            return {
+                ...prevPlan,
+                phases: updatedPhases,
+            };
+        });
+
     };
+    const handleDetailChangeEdit = (event, index) => {
+        const { name, value } = event.target;
+        if (name === 'fundedPhase') {
+            setSelectedPlan((prevPlan) => {
+                const updatedPhases = [...prevPlan.phases];
+                updatedPhases[index] = {
+                    ...updatedPhases[index],
+                    [name]: event.target.checked,
+                };
+
+                return {
+                    ...prevPlan,
+                    phases: updatedPhases,
+                };
+            })
+            return;
+        }
+        setSelectedPlan((prevPlan) => {
+            const updatedPhases = [...prevPlan.phases];
+            updatedPhases[index] = {
+                ...updatedPhases[index],
+                [name]: value,
+            };
+
+            return {
+                ...prevPlan,
+                phases: updatedPhases,
+            };
+        });
+
+    };
+
 
     const formatDate = (timestamp) => {
         if (!timestamp) return '';
@@ -324,30 +462,144 @@ export default function PaginationTable() {
         return date.toISOString().split('T')[0];
     };
 
-    const formatDateFiled = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so +1
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+    const theme = useTheme();
+    const tableFieldsValidater = (field, value) => {
+
+        if (!value) {
+            return false;
+        }
+        return true;
+
     };
 
-    function renderStatusChip(status) {
-        switch (status) {
-            case 'allow':
-                return <Chip label={status} color="success" />;
-            case 'block':
-                return <Chip label={status} color="error" />;
-            case 'pending':
-                return <Chip label={status} color="primary" variant="outlined" />;
-            default:
-                return <Chip label="Unknown" color="default" />;
+    const increasPhase = () => {
+        const newPhase = {
+            phaseName: '',
+            fundedPhase: false,
+            initialBalance: '',
+            initialLeverage: '',
+            tradingPeriod: '',
+            minTradingDays: '',
+            maxDailyLoss: '',
+            maxDailyLossType: 'staticDrawdown',
+            maxLoss: '',
+            profitTarget: '',
+            profitSplitBroker: '50',
+        };
+        const lastPhase = newPlan.phases[newPlan.phases.length - 1];
+        const fieldsToValidate = {
+            phaseName: "Phase Name is required!",
+            initialBalance: "Initial Balance is required and must be a number greater than zero!",
+            initialLeverage: "Initial Leverage is required and must be a number greater than zero!",
+            maxDailyLoss: "Max Daily Loss is required and must be a number greater than zero!",
+            maxLoss: "Max Loss is required and must be a number greater than zero!",
+            profitTarget: "Profit Target is required and must be a number greater than zero!",
+        };
+
+        for (const [field, errorMessage] of Object.entries(fieldsToValidate)) {
+            if (!tableFieldsValidater(field, lastPhase[field])) {
+                showSnackbar(errorMessage, 'error');
+                return;
+            }
+
         }
+        if (newPlan.phases.length === 5) {
+            showSnackbar("Maximum phase is 5!", 'error');
+            return
+        }
+        // Create a copy of the current phases array and add the new phase
+        setNewPlan(prevState => ({
+            ...prevState,
+            phases: [...prevState.phases, newPhase]
+        }));
+
     }
 
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const removeLatestPhase = () => {
+        if (newPlan.phases.length === 1) {
+            showSnackbar("At least, you should have one phase!", 'error');
+            return
+        }
+        setNewPlan((prevPlan) => {
+
+
+            // Create a copy of the phases array
+            const updatedPhases = [...prevPlan.phases];
+            // Remove the last element from the array
+            updatedPhases.pop();
+            // Return the new state
+            console.log("sdfsdfsdfsdf", newPlan.phases.length)
+
+            return {
+                ...prevPlan,
+                phases: updatedPhases
+            };
+        });
+    };
+
+    ///edit phase handle handlers
+
+    const increasPhaseEdit = () => {
+        const newPhase = {
+            phaseName: '',
+            fundedPhase: false,
+            initialBalance: '',
+            initialLeverage: '',
+            tradingPeriod: '',
+            minTradingDays: '',
+            maxDailyLoss: '',
+            maxDailyLossType: 'staticDrawdown',
+            maxLoss: '',
+            profitTarget: '',
+            profitSplitBroker: '50',
+        };
+        const lastPhase = selectedPlan.phases[newPlan.phases.length - 1];
+        const fieldsToValidate = {
+            phaseName: "Phase Name is required!",
+            initialBalance: "Initial Balance is required and must be a number greater than zero!",
+            initialLeverage: "Initial Leverage is required and must be a number greater than zero!",
+            maxDailyLoss: "Max Daily Loss is required and must be a number greater than zero!",
+            maxLoss: "Max Loss is required and must be a number greater than zero!",
+            profitTarget: "Profit Target is required and must be a number greater than zero!",
+        };
+
+        for (const [field, errorMessage] of Object.entries(fieldsToValidate)) {
+            if (!tableFieldsValidater(field, lastPhase[field])) {
+                showSnackbar(errorMessage, 'error');
+                return;
+            }
+
+        }
+        if (selectedPlan.phases.length === 5) {
+            showSnackbar("Maximum phase is 5!", 'error');
+            return
+        }
+        // Create a copy of the current phases array and add the new phase
+        setSelectedPlan(prevState => ({
+            ...prevState,
+            phases: [...prevState.phases, newPhase]
+        }));
+
+    }
+
+    const removeLatestPhaseEdit = () => {
+        if (selectedPlan.phases.length === 1) {
+            showSnackbar("At least, you should have one phase!", 'error');
+            return
+        }
+        setSelectedPlan((prevPlan) => {
+            // Create a copy of the phases array
+            const updatedPhases = [...prevPlan.phases];
+            // Remove the last element from the array
+            updatedPhases.pop();
+            // Return the new state
+
+            return {
+                ...prevPlan,
+                phases: updatedPhases
+            };
+        });
+    };
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -355,33 +607,13 @@ export default function PaginationTable() {
                 <StyledTable stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left" sx={{ width: '200px' }}>
+                            <TableCell align="left" sx={{ width: '100px' }}>
                                 Name
                             </TableCell>
                             <TableCell align="left" sx={{ width: '100px' }}>
                                 Price
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                InitialBalnce
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                DailyDrawdown
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                TotalDrawdown
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '85px' }}>
-                                phase1
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '110px' }}>
-                                phase2
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '90px' }}>
-                                Leverage
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                profitShare
-                            </TableCell>
+
                             <TableCell align="left" sx={{ width: '120px' }}>
                                 createdAt
                             </TableCell>
@@ -393,7 +625,7 @@ export default function PaginationTable() {
                                 align="center"
                                 sx={{
                                     marginLeft: '0px',
-                                    width: '80px',
+                                    width: '30px',
                                     position: 'sticky',
                                     right: 0,
                                     opacity: 0.8,
@@ -415,15 +647,9 @@ export default function PaginationTable() {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((plan, index) => (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                    <TableCell align="left">{plan.name}</TableCell>
-                                    <TableCell align="left">{plan.price}</TableCell>
-                                    <TableCell align="left">{plan.initialBalance}</TableCell>
-                                    <TableCell align="left">{plan.dailyDrawdown}</TableCell>
-                                    <TableCell align="left">{plan.totalDrawdown}</TableCell>
-                                    <TableCell align="left">{plan.phase1}</TableCell>
-                                    <TableCell align="left">{plan.phase2}</TableCell>
-                                    <TableCell align="left">{plan.leverage}</TableCell>
-                                    <TableCell align="left">{plan.profitShare}</TableCell>
+                                    <TableCell align="left">{plan.planName}</TableCell>
+                                    <TableCell align="left">{plan.planPrice}</TableCell>
+
                                     <TableCell align="left">{formatDate(plan.createdAt)}</TableCell>
                                     <TableCell align="left">{formatDate(plan.updatedAt)}</TableCell>
 
@@ -463,12 +689,11 @@ export default function PaginationTable() {
                                             <MenuItem
                                                 onClick={() => {
                                                     handleClose();
-                                                    setSelectedCusomer({
+                                                    setSelectedPlan({
                                                         ...plan,
-                                                        password: ''
                                                     });
 
-                                                    setEditOpen(true);
+                                                    setEditPhaseOpen(true);
                                                 }}
                                                 disableRipple
                                             >
@@ -478,7 +703,7 @@ export default function PaginationTable() {
                                             <MenuItem
                                                 onClick={() => {
                                                     handleClose();
-                                                    setSelectedCusomer(plan);
+                                                    setSelectedPlan(plan);
                                                     setViewOpen(true);
                                                 }}
                                                 disableRipple
@@ -489,7 +714,7 @@ export default function PaginationTable() {
                                             <MenuItem
                                                 onClick={() => {
                                                     handleClose();
-                                                    setSelectedCusomer(plan);
+                                                    setSelectedPlan(plan);
                                                     setCredentialOpen(true);
                                                 }}
                                                 disableRipple
@@ -531,7 +756,7 @@ export default function PaginationTable() {
                                             <Divider sx={{ my: 0.5 }} />
                                             <MenuItem
                                                 onClick={() => {
-                                                    setSelectedCusomer(plan);
+                                                    setSelectedPlan(plan);
                                                     handleClose();
                                                     setRemoveOpen(true);
                                                 }}
@@ -665,7 +890,7 @@ export default function PaginationTable() {
 
                     <Button
                         onClick={() => {
-                            handleDelete(selectedPlan.id);
+                            handleDelete(selectedPlan.planID);
                             setRemoveOpen(false);
                         }}
                         color="primary"
@@ -693,120 +918,36 @@ export default function PaginationTable() {
                     <DialogContentText sx={{ color: 'white' }}></DialogContentText>
                     <ValidatorForm
                         ref={formRef} // Attach the ref to ValidatorForm
-                        onSubmit={handleSubmit}
+                        onSubmit={createPlan}
                         onError={() => null}
                     >
                         <TextField
                             autoFocus
                             id="name"
-                            type="name"
+                            type="text"
                             margin="dense"
-                            label="Name"
-                            value={newPlan.name || ''}
+                            label="Input new plan name."
+                            value={newPlan?.planName || ''}
                             onChange={handleChange}
-                            name="name"
+                            name="planName"
+                            validators={['required']}
+                            errorMessages={['this field is required']}
+                            required
+                        />
+                        <TextField
+                            autoFocus
+                            type="number"
+                            margin="dense"
+                            label="Input new plan price."
+                            value={newPlan?.planPrice || ''}
+                            onChange={handleChange}
+                            name="planPrice"
                             validators={['required']}
                             errorMessages={['this field is required']}
                             required
                         />
 
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Price"
-                            value={newPlan.price || ''}
-                            onChange={handleChange}
-                            name="price"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="InitialBalance"
-                            value={newPlan.initialBalance || ''}
-                            onChange={handleChange}
-                            name="initialBalance"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="DailyDrawdown"
-                            value={newPlan.dailyDrawdown || ''}
-                            onChange={handleChange}
-                            name="dailyDrawdown"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
 
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="TotalDrawDown"
-                            value={newPlan.totalDrawdown || ''}
-                            onChange={handleChange}
-                            name="totalDrawdown"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Phase1"
-                            value={newPlan.phase1 || ''}
-                            onChange={handleChange}
-                            name="phase1"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Phase2"
-                            value={newPlan.phase2 || ''}
-                            onChange={handleChange}
-                            name="phase2"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Leverage"
-                            value={newPlan.leverage || ''}
-                            onChange={handleChange}
-                            name="leverage"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ProfitShare"
-                            value={newPlan.profitShare || ''}
-                            onChange={handleChange}
-                            name="profitShare"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
                     </ValidatorForm>
                 </DialogContent>
 
@@ -835,212 +976,9 @@ export default function PaginationTable() {
                 </DialogActions>
             </Dialog>
 
-            {/* This is edit modal with responsive strategy */}
-            <Dialog
-                fullWidth
-                open={openEdit}
-                onClose={() => {
-                    setEditOpen(false);
-                }}
-                aria-labelledby="form-dialog-title"
-                minWidth={700} // Disable automatic resizing
-            >
-                <DialogTitle id="form-dialog-title">Edit Plan</DialogTitle>
 
-                <DialogContent>
-                    <DialogContentText sx={{ color: 'white' }}></DialogContentText>
-                    <ValidatorForm
-                        ref={formRef} // Attach the ref to ValidatorForm
-                        onSubmit={handleSubmitEdit}
-                        onError={() => null}
-                    >
-                        <TextField
-                            autoFocus
-                            id="name"
-                            type="text"
-                            margin="dense"
-                            label="Name"
-                            value={selectedPlan?.name || ''}
-                            onChange={handleChangeEdit}
-                            name="name"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
 
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Price"
-                            value={selectedPlan?.price || ''}
-                            onChange={handleChangeEdit}
-                            name="price"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="InitialBalance"
-                            value={selectedPlan?.initialBalance || ''}
-                            onChange={handleChangeEdit}
-                            name="initialBalance"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="DailyDrawdown"
-                            value={selectedPlan?.dailyDrawdown || ''}
-                            onChange={handleChangeEdit}
-                            name="dailyDrawdown"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
 
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="TotalDrawDown"
-                            value={selectedPlan?.totalDrawdown || ''}
-                            onChange={handleChangeEdit}
-                            name="totalDrawdown"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Phase1"
-                            value={selectedPlan?.phase1 || ''}
-                            onChange={handleChangeEdit}
-                            name="phase1"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Phase2"
-                            value={selectedPlan?.phase2 || ''}
-                            onChange={handleChangeEdit}
-                            name="phase2"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Leverage"
-                            value={selectedPlan?.leverage || ''}
-                            onChange={handleChangeEdit}
-                            name="leverage"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ProfitShare"
-                            value={selectedPlan?.profitShare || ''}
-                            onChange={handleChangeEdit}
-                            name="profitShare"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                        />
-                    </ValidatorForm>
-                </DialogContent>
-
-                <DialogActions>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => {
-                            setEditOpen(false);
-                        }}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        type="submit"
-                        onClick={() => {
-                            formRef.current.submit();
-                            setEditOpen(false);
-                        }}
-                    >
-                        <Icon>send</Icon>
-                        <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* This is view modal with responsive strategy */}
-            <Dialog
-                fullScreen={fullScreen}
-                open={openView}
-                onClose={() => setViewOpen(false)}
-                aria-labelledby="responsive-dialog-title"
-            >
-                <DialogTitle id="responsive-dialog-title">Plane Details</DialogTitle>
-
-                <DialogContent>
-                    <Typography>
-                        <strong>Name:</strong> &nbsp;&nbsp;
-                        {selectedPlan?.name}
-                    </Typography>
-                    <Typography>
-                        <strong>Price:</strong>&nbsp;&nbsp; {selectedPlan?.price}
-                    </Typography>
-                    <Typography>
-                        <strong>InitialBalnce:</strong> &nbsp;&nbsp;{selectedPlan?.initialBalance}
-                    </Typography>
-                    <Typography>
-                        <strong>DailyDrawdown:</strong> &nbsp;&nbsp;{selectedPlan?.dailyDrawdown}
-                    </Typography>
-                    <Typography>
-                        <strong>TotalDrawdown:</strong> &nbsp;&nbsp;{selectedPlan?.totalDrawdown}
-                    </Typography>
-
-                    <Typography>
-                        <strong>Phase1:</strong> &nbsp;&nbsp;{selectedPlan?.phase1}
-                    </Typography>
-                    <Typography>
-                        <strong>Phase2:</strong> &nbsp;&nbsp;{selectedPlan?.phase2}
-                    </Typography>
-                    <Typography>
-                        <strong>Leverage:</strong> &nbsp;&nbsp;{selectedPlan?.leverage}
-                    </Typography>
-                    <Typography>
-                        <strong>ProfitShare:</strong> &nbsp;&nbsp;{selectedPlan?.profitShare}
-                    </Typography>
-
-                    <Typography>
-                        <strong>Created:</strong> &nbsp;&nbsp;
-                        {formatDate(selectedPlan?.createdAt)}
-                    </Typography>
-                    <Typography>
-                        <strong>Updated:</strong> &nbsp;&nbsp;
-                        {formatDate(selectedPlan?.updatedAt)}
-                    </Typography>
-                </DialogContent>
-
-                <DialogActions>
-                    <Button onClick={() => setViewOpen(false)} color="primary">
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
 
             <TablePagination
                 sx={{ px: 2 }}
@@ -1068,6 +1006,952 @@ export default function PaginationTable() {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+            {/* Add phase dialog */}
+            <Dialog fullScreen open={phaseOpen} onClose={closePhase} TransitionComponent={Transition}
+
+            >
+                <AppBar sx={{ position: 'relative' }}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={closePhase} aria-label="Close">
+                            <CloseIcon />
+                        </IconButton>
+
+                        <H6 sx={{ flex: 1, marginLeft: theme.spacing(2) }}>Cancel</H6>
+
+                        <Button color="inherit" onClick={handleSubmit}>
+                            Submit
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                <SimpleCard>
+                    <TableContainer sx={{ maxHeight: 780 }}>
+                        <StyledTable1 stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ width: '200px' }}>
+
+                                    </TableCell>
+                                    {newPlan?.phases.map((_, index) =>
+                                        <TableCell align="center" sx={{ width: '300px' }} key={index}>
+                                            Phase{index + 1}
+                                        </TableCell>)}
+                                    <TableCell
+                                        align="center"
+                                        sx={{
+                                            marginLeft: '0px',
+                                            width: '140px',
+                                            right: 0,
+                                            opacity: 0.8,
+                                            // backgroundColor: '#9C9C9C'
+                                            boxShadow: '-4px 0px 20px rgba(0, 0, 0, 0.3)'
+                                        }}
+                                    >
+                                        <IconButton
+                                            onClick={removeLatestPhase}
+                                            sx={{ backgroundColor: '#9C9C9C', }}
+                                        >
+
+                                            <RemoveCircleIcon sx={{ fontSize: 30 }} />
+                                        </IconButton>
+                                        <IconButton
+
+                                            onClick={increasPhase}
+                                            sx={{ backgroundColor: '#9C9C9C', marginLeft: 1 }}
+
+                                        >
+                                            <AddCircleIcon sx={{ fontSize: 30 }} />
+
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Phase Name*</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+
+                                                autoFocus
+                                                type="text"
+                                                margin="dense"
+
+                                                value={phase.phaseName || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="phaseName"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Funded Phase</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={phase.fundedPhase}
+                                                    name="fundedPhase"
+                                                    onChange={(event) => handleDetailChange(event, index)}
+                                                />
+                                            }
+
+                                        />
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Initial Balance*</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.initialBalance || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="initialBalance"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Initial Leverage*</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.initialLeverage || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="initialLeverage"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Trading Period</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.tradingPeriod || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="tradingPeriod"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Minimum Trading Days</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="text"
+                                                margin="dense"
+
+                                                value={phase.minTradingDays || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="minTradingDays"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max daily Loss(%)*</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm>
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.maxDailyLoss || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="maxDailyLoss"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max Daily Loss Type*</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <FormControl style={{ width: '100%', marginTop: '15px' }} sx={{
+                                            '& .MuiInputBase-root': {
+                                                height: 38,  // Set height for the input base
+                                                padding: '2px 4px',  // Adjust padding
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                height: '100%',  // Match the height of the input element
+                                                boxSizing: 'border-box',  // Ensure box model is correct
+                                            },
+                                        }}>
+                                            <Select
+                                                fullWidth
+                                                labelId="Plans"
+                                                value={phase.maxDailyLossType || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+
+                                                name="maxDailyLossType"
+                                                validators={['required']}
+                                                errorMessages={['This field is required']}
+                                            >
+
+                                                <MenuItem value="staticDrawdown">
+                                                    Static Drawdown
+                                                </MenuItem>
+                                                <MenuItem value={"trailingDrawdown"}>
+                                                    Trailing Drawdown
+                                                </MenuItem>
+
+                                            </Select>
+                                        </FormControl>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max Loss*</TableCell>
+
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm>
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.maxLoss || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="maxLoss"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Profit Target*</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.profitTarget || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="profitTarget"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm >
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Profit Split</TableCell>
+                                    {newPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.profitSplitBroker || ''}
+                                                onChange={(event) => handleDetailChange(event, index)}
+                                                name="profitSplitBroker"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                            </TableBody>
+                        </StyledTable1>
+                    </TableContainer>
+                </SimpleCard>
+            </Dialog>
+
+
+
+            {/* Edit phase dialog */}
+            <Dialog fullScreen open={editPhaseOpen} onClose={closeEditPhase} TransitionComponent={Transition}>
+                <AppBar sx={{ position: 'relative' }}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={closeEditPhase} aria-label="Close">
+                            <CloseIcon />
+                        </IconButton>
+
+                        <H6 sx={{ flex: 1, marginLeft: theme.spacing(2) }}>Cancel</H6>
+
+                        <Button color="inherit" onClick={handleSubmitEdit}>
+                            Submit
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                <SimpleCard>
+                    <TableContainer sx={{ maxHeight: 780 }}>
+                        <StyledTable1 stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ width: '200px' }}>
+
+                                    </TableCell>
+                                    {selectedPlan?.phases.map((_, index) =>
+                                        <TableCell align="center" sx={{ width: '300px' }} key={index}>
+                                            Phase{index + 1}
+                                        </TableCell>)}
+                                    <TableCell
+                                        align="center"
+                                        sx={{
+                                            marginLeft: '0px',
+                                            width: '140px',
+                                            right: 0,
+                                            opacity: 0.8,
+                                            // backgroundColor: '#9C9C9C'
+                                            boxShadow: '-4px 0px 20px rgba(0, 0, 0, 0.3)'
+                                        }}
+                                    >
+                                        <IconButton
+                                            onClick={removeLatestPhaseEdit}
+                                            sx={{ backgroundColor: '#9C9C9C', }}
+                                        >
+
+                                            <RemoveCircleIcon sx={{ fontSize: 30 }} />
+                                        </IconButton>
+                                        <IconButton
+
+                                            onClick={increasPhaseEdit}
+                                            sx={{ backgroundColor: '#9C9C9C', marginLeft: 1 }}
+
+                                        >
+                                            <AddCircleIcon sx={{ fontSize: 30 }} />
+
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Phase Name*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+
+                                                autoFocus
+                                                type="text"
+                                                margin="dense"
+
+                                                value={phase.phaseName || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="phaseName"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Funded Phase</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={phase.fundedPhase}
+                                                    name="fundedPhase"
+                                                    onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                />
+                                            }
+
+                                        />
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Initial Balance*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.initialBalance || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="initialBalance"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Initial Leverage*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.initialLeverage || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="initialLeverage"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Trading Period</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.tradingPeriod || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="tradingPeriod"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Minimum Trading Days</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="text"
+                                                margin="dense"
+
+                                                value={phase.minTradingDays || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="minTradingDays"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max daily Loss(%)*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm>
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.maxDailyLoss || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="maxDailyLoss"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max Daily Loss Type*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <FormControl style={{ width: '100%', marginTop: '15px' }} sx={{
+                                            '& .MuiInputBase-root': {
+                                                height: 38,  // Set height for the input base
+                                                padding: '2px 4px',  // Adjust padding
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                height: '100%',  // Match the height of the input element
+                                                boxSizing: 'border-box',  // Ensure box model is correct
+                                            },
+                                        }}>
+                                            <Select
+                                                fullWidth
+                                                labelId="Plans"
+                                                value={phase.maxDailyLossType || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+
+                                                name="maxDailyLossType"
+                                                validators={['required']}
+                                                errorMessages={['This field is required']}
+                                            >
+
+                                                <MenuItem value="staticDrawdown">
+                                                    Static Drawdown
+                                                </MenuItem>
+                                                <MenuItem value={"trailingDrawdown"}>
+                                                    Trailing Drawdown
+                                                </MenuItem>
+
+                                            </Select>
+                                        </FormControl>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max Loss*</TableCell>
+
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm>
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.maxLoss || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="maxLoss"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Profit Target*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.profitTarget || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="profitTarget"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm >
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Profit Split</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.profitSplitBroker || ''}
+                                                onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="profitSplitBroker"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                            </TableBody>
+                        </StyledTable1>
+                    </TableContainer>
+                </SimpleCard>
+            </Dialog>
+
+            {/* View phase dialog */}
+            <Dialog fullScreen open={openView} onClose={closeViewPhase} TransitionComponent={Transition}>
+                <AppBar sx={{ position: 'relative' }}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={closeViewPhase} aria-label="Close">
+                            <CloseIcon />
+                        </IconButton>
+
+                        <H6 sx={{ flex: 1, marginLeft: theme.spacing(2) }}>Cancel</H6>
+                        {/* 
+                        <Button color="inherit" onClick={handleSubmitEdit}>
+                            Submit
+                        </Button> */}
+                    </Toolbar>
+                </AppBar>
+                <SimpleCard>
+                    <TableContainer sx={{ maxHeight: 780 }}>
+                        <StyledTable1 stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ width: '200px' }}>
+
+                                    </TableCell>
+                                    {selectedPlan?.phases.map((_, index) =>
+                                        <TableCell align="center" sx={{ width: '300px' }} key={index}>
+                                            Phase{index + 1}
+                                        </TableCell>)}
+                                    <TableCell
+                                        align="center"
+                                        sx={{
+                                            marginLeft: '0px',
+                                            width: '140px',
+                                            right: 0,
+                                            opacity: 0.8,
+                                            // backgroundColor: '#9C9C9C'
+                                            boxShadow: '-4px 0px 20px rgba(0, 0, 0, 0.3)'
+                                        }}
+                                    >
+                                        {/* <IconButton
+                                            onClick={removeLatestPhaseEdit}
+                                            sx={{ backgroundColor: '#9C9C9C', }}
+                                        >
+
+                                            <RemoveCircleIcon sx={{ fontSize: 30 }} />
+                                        </IconButton>
+                                        <IconButton
+
+                                            onClick={increasPhaseEdit}
+                                            sx={{ backgroundColor: '#9C9C9C', marginLeft: 1 }}
+
+                                        >
+                                            <AddCircleIcon sx={{ fontSize: 30 }} />
+
+                                        </IconButton> */}
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Phase Name*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+
+                                                autoFocus
+                                                type="text"
+                                                margin="dense"
+
+                                                value={phase.phaseName || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="phaseName"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Funded Phase</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={phase.fundedPhase}
+                                                    name="fundedPhase"
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                />
+                                            }
+
+                                        />
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Initial Balance*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.initialBalance || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="initialBalance"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Initial Leverage*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.initialLeverage || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="initialLeverage"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Trading Period</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.tradingPeriod || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="tradingPeriod"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Minimum Trading Days</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="text"
+                                                margin="dense"
+
+                                                value={phase.minTradingDays || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="minTradingDays"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max daily Loss(%)*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm>
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.maxDailyLoss || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="maxDailyLoss"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max Daily Loss Type*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <FormControl style={{ width: '100%', marginTop: '15px' }} sx={{
+                                            '& .MuiInputBase-root': {
+                                                height: 38,  // Set height for the input base
+                                                padding: '2px 4px',  // Adjust padding
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                height: '100%',  // Match the height of the input element
+                                                boxSizing: 'border-box',  // Ensure box model is correct
+                                            },
+                                        }}>
+                                            <Select
+                                                fullWidth
+                                                labelId="Plans"
+                                                value={phase.maxDailyLossType || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+
+                                                name="maxDailyLossType"
+                                                validators={['required']}
+                                                errorMessages={['This field is required']}
+                                            >
+
+                                                <MenuItem value="staticDrawdown">
+                                                    Static Drawdown
+                                                </MenuItem>
+                                                <MenuItem value={"trailingDrawdown"}>
+                                                    Trailing Drawdown
+                                                </MenuItem>
+
+                                            </Select>
+                                        </FormControl>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Max Loss*</TableCell>
+
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm>
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.maxLoss || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="maxLoss"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Profit Target*</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.profitTarget || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="profitTarget"
+                                                validators={['required']}
+                                                errorMessages={['this field is required']}
+                                                required
+                                            />
+                                        </ValidatorForm >
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                                <TableRow hover role="checkbox" tabIndex={-1} >
+                                    <TableCell align="center">Profit Split</TableCell>
+                                    {selectedPlan?.phases.map((phase, index) => <TableCell align="center" key={index}>
+                                        <ValidatorForm >
+                                            <TextField
+                                                autoFocus
+                                                type="number"
+                                                margin="dense"
+
+                                                value={phase.profitSplitBroker || ''}
+                                                // onChange={(event) => handleDetailChangeEdit(event, index)}
+                                                name="profitSplitBroker"
+                                                validators={[]}
+                                                errorMessages={[]}
+                                                required
+                                            />
+                                        </ValidatorForm>
+                                    </TableCell>)}
+                                    <TableCell align="center"></TableCell>
+                                </TableRow>
+
+                            </TableBody>
+                        </StyledTable1>
+                    </TableContainer>
+                </SimpleCard>
+            </Dialog>
         </Paper>
     );
 }
