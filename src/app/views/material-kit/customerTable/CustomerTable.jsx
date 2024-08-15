@@ -947,30 +947,7 @@ export default function PaginationTable() {
                             variant="outlined"
                             required
                         />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Accounts"
-                            value={newCustomer.accounts || ''}
-                            onChange={handleChange}
-                            name="accounts"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Orders"
-                            value={newCustomer.orders || ''}
-                            onChange={handleChange}
-                            name="orders"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
+
                         <TextField
                             autoFocus
                             type="number"
@@ -1385,30 +1362,7 @@ export default function PaginationTable() {
                             variant="outlined"
                             required
                         />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Accounts"
-                            value={seletedCustomer?.accounts}
-                            onChange={handleChangeEdit}
-                            name="accounts"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="Orders"
-                            value={seletedCustomer?.orders}
-                            onChange={handleChangeEdit}
-                            name="orders"
-                            validators={['required']}
-                            errorMessages={['this field is required']}
-                            required
-                        />
+
                         <TextField
                             autoFocus
                             type="number"
