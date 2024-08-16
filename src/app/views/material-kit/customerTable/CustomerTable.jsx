@@ -454,12 +454,7 @@ export default function PaginationTable() {
                             <TableCell align="left" sx={{ width: '140px' }}>
                                 Phone
                             </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Externalld1
-                            </TableCell>
-                            <TableCell align="left" sx={{ width: '120px' }}>
-                                Externalld2
-                            </TableCell>
+
                             <TableCell align="left" sx={{ width: '90px' }}>
                                 Status
                             </TableCell>
@@ -548,8 +543,7 @@ export default function PaginationTable() {
                                     <TableCell align="left">{customer.referrals}</TableCell>
                                     <TableCell align="left">{customer.language}</TableCell>
                                     <TableCell align="left">{customer.phone}</TableCell>
-                                    <TableCell align="left">{customer.externalID1}</TableCell>
-                                    <TableCell align="left">{customer.externalID2}</TableCell>
+
                                     <TableCell align="left">
                                         {renderStatusChip(customer?.status)}
                                     </TableCell>
@@ -985,28 +979,7 @@ export default function PaginationTable() {
                             errorMessages={['this field is required']}
                             required
                         />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ExternalID1"
-                            value={newCustomer.externalID1 || ''}
-                            onChange={handleChange}
-                            name="externalID1"
-                            validators={[]}
-                            errorMessages={[]}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ExternalID2"
-                            value={newCustomer.externalID2 || ''}
-                            onChange={handleChange}
-                            name="externalID2"
-                            validators={[]}
-                            errorMessages={[]}
-                        />
+
                         <FormControl style={{ width: '100%' }}>
                             <InputLabel id="language-label">Status</InputLabel>
                             <Select
@@ -1399,28 +1372,7 @@ export default function PaginationTable() {
                             errorMessages={['this field is required']}
                             required
                         />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ExternalID1"
-                            value={seletedCustomer?.externalID1 || ''}
-                            onChange={handleChangeEdit}
-                            name="externalID1"
-                            validators={[]}
-                            errorMessages={[]}
-                        />
-                        <TextField
-                            autoFocus
-                            type="number"
-                            margin="dense"
-                            label="ExternalID2"
-                            value={seletedCustomer?.externalID2 || ''}
-                            onChange={handleChangeEdit}
-                            name="externalID2"
-                            validators={[]}
-                            errorMessages={[]}
-                        />
+
                         <FormControl style={{ width: '100%' }}>
                             <InputLabel id="language-label">Status</InputLabel>
                             <Select
@@ -1644,12 +1596,7 @@ export default function PaginationTable() {
                     <Typography>
                         <strong>Phone:</strong>&nbsp;&nbsp; {seletedCustomer?.phone}
                     </Typography>
-                    <Typography>
-                        <strong>External Id1:</strong> &nbsp;&nbsp;{seletedCustomer?.externalID1}
-                    </Typography>
-                    <Typography>
-                        <strong>External Id2:</strong>&nbsp;&nbsp; {seletedCustomer?.externalID2}
-                    </Typography>
+
                     <Typography>
                         <strong>Status:</strong> &nbsp;&nbsp;
                         {renderStatusChip(seletedCustomer?.status)}

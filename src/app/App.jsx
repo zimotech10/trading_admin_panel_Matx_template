@@ -9,6 +9,7 @@ import SettingsProvider from './contexts/SettingsContext';
 // ROUTES
 import routes from './routes';
 import config from '../config';
+import "./App.css"
 // FAKE SERVER
 // import '../fake-db';
 

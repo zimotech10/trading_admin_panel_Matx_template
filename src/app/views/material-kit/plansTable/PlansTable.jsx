@@ -879,7 +879,7 @@ export default function PaginationTable() {
                     setCreateOpen(false);
                 }}
                 aria-labelledby="form-dialog-title"
-                minwidth={700} // Disable automatic resizing
+
             >
                 <DialogTitle id="form-dialog-title">Create new Plan</DialogTitle>
 
@@ -978,7 +978,7 @@ export default function PaginationTable() {
 
             {/* Add phase dialog */}
             <Dialog fullScreen open={phaseOpen} onClose={closePhase} TransitionComponent={Transition}
-
+                sx={{ overflow: 'auto' }}
             >
                 <AppBar sx={{ position: 'relative' }}>
                     <Toolbar>
@@ -993,9 +993,9 @@ export default function PaginationTable() {
                         </Button>
                     </Toolbar>
                 </AppBar>
-                <SimpleCard>
-                    <TableContainer sx={{ maxHeight: 780 }}>
-                        <StyledTable1 stickyHeader aria-label="sticky table">
+                <SimpleCard sx={{ overflow: 'auto' }}>
+                    <TableContainer sx={{ maxHeight: 780, overflow: 'auto' }}>
+                        <StyledTable1 stickyHeader aria-label="sticky table" >
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center" sx={{ width: '200px' }}>
