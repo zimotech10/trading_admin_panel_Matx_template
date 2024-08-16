@@ -7,7 +7,7 @@ import {
     Snackbar,
     Alert,
     useTheme,
-
+    InputAdornment,
     FormControl,
 
 } from '@mui/material';
@@ -31,10 +31,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import EmailIcon from '@mui/icons-material/Email';
 import AddIcon from '@mui/icons-material/Add';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import BlockIcon from '@mui/icons-material/Block';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -119,10 +119,11 @@ export default function PaginationTable() {
     const [accounts, setAccounts] = useState([]);
     const [newAccount, setNewAccount] = useState({
         customerEmail: '',
-        // companyEmail: '',
         planName: '',
         tradeSystem: '',
-        displayName: ''
+        displayName: '',
+        accountUser: '',
+        accountPassword: ''
     });
     const formRef = useRef(null);
     const token = localStorage.getItem('token');
@@ -135,6 +136,15 @@ export default function PaginationTable() {
     const [openCreate, setCreateOpen] = useState(false);
     const [customers, setCustomers] = useState([]);
     const [plans, setPlans] = useState([]);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const handleCreateOpen = () => setCreateOpen(true);
 
@@ -236,6 +246,14 @@ export default function PaginationTable() {
             })
             .then((res) => {
                 fetchAccounts();
+                setNewAccount({
+                    customerEmail: '',
+                    planName: '',
+                    tradeSystem: '',
+                    displayName: '',
+                    accountUser: '',
+                    accountPassword: ''
+                })
                 showSnackbar('Create Account successfully', 'success');
             })
             .catch((error) => {
@@ -649,13 +667,23 @@ export default function PaginationTable() {
             <Dialog
                 fullWidth
                 open={openCreate}
-                onClose={() => setCreateOpen(false)}
+                onClose={() => {
+                    setCreateOpen(false)
+                    setNewAccount({
+                        customerEmail: '',
+                        planName: '',
+                        tradeSystem: '',
+                        displayName: '',
+                        accountUser: '',
+                        accountPassword: ''
+                    })
+                }}
                 aria-labelledby="form-dialog-title"
             // sx={{
             //     width: 700
             // }}
             >
-                <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                <DialogTitle id="form-dialog-title">Create new account</DialogTitle>
 
                 <DialogContent>
                     <DialogContentText sx={{ color: 'white' }}></DialogContentText>
@@ -725,18 +753,62 @@ export default function PaginationTable() {
                             </SelectValidator>
                         </FormControl>
                         {newAccount.tradeSystem === 'MT4' && (
-                            <TextField
-                                autoFocus
-                                type="text"
-                                margin="dense"
-                                label="Display Name"
-                                value={newAccount.displayName || ''}
-                                onChange={handleChange}
-                                name="displayName"
-                                validators={['required']}
-                                errorMessages={['This field is required']}
-                                style={{ marginTop: '15px' }}
-                            />
+                            <>
+                                <TextField
+                                    autoFocus
+                                    type="text"
+                                    margin="dense"
+                                    label="Display Name"
+                                    value={newAccount.displayName || ''}
+                                    onChange={handleChange}
+                                    name="displayName"
+                                    validators={['required']}
+                                    errorMessages={['This field is required']}
+                                    style={{ marginTop: '15px' }}
+                                />
+                                <TextField
+                                    autoFocus
+                                    type="text"
+                                    margin="dense"
+                                    label="User Name"
+                                    value={newAccount.accountUser || ''}
+                                    onChange={handleChange}
+                                    name="accountUser"
+                                    validators={['required']}
+                                    errorMessages={['This field is required']}
+                                    style={{ marginTop: '15px' }}
+                                />
+                                <TextField
+                                    autoFocus
+                                    type={showPassword ? 'text' : 'password'}
+                                    margin="dense"
+                                    label="Password"
+                                    value={newAccount.accountPassword || ''}
+                                    onChange={handleChange}
+                                    name="accountPassword"
+                                    validators={['required']}
+                                    errorMessages={['This field is required']}
+                                    style={{ marginTop: '15px' }}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? (
+                                                        <VisibilityOff />
+                                                    ) : (
+                                                        <Visibility />
+                                                    )}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
+                            </>
                         )}
                     </ValidatorForm>
                 </DialogContent>
@@ -745,7 +817,17 @@ export default function PaginationTable() {
                     <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => setCreateOpen(false)}
+                        onClick={() => {
+                            setCreateOpen(false)
+                            setNewAccount({
+                                customerEmail: '',
+                                planName: '',
+                                tradeSystem: '',
+                                displayName: '',
+                                accountUser: '',
+                                accountPassword: ''
+                            })
+                        }}
                     >
                         Cancel
                     </Button>
