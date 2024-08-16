@@ -977,6 +977,7 @@ export default function PaginationTable() {
             </Snackbar>
 
             {/* Add phase dialog */}
+
             <Dialog fullScreen open={phaseOpen} onClose={closePhase} TransitionComponent={Transition}
                 sx={{ overflow: 'auto' }}
             >
