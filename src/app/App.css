@@ -1,3 +1,11 @@
-.MuiPaper-root {
+.MuiPaper-root
+    .MuiPaper-elevation
+    .MuiPaper-rounded
+    .MuiPaper-elevation6
+    .MuiCard-root
+    .css-1u7jyyi-MuiPaper-root-MuiCard-root {
+    overflow: auto;
+}
+body {
     overflow: auto;
 }
