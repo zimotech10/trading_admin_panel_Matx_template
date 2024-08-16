@@ -276,6 +276,7 @@ export default function PaginationTable() {
     }
 
     const closePhase = () => {
+        cleanNewPlan();
         setPhaseOpen(false);
     }
     const closeEditPhase = () => {
@@ -979,7 +980,7 @@ export default function PaginationTable() {
             {/* Add phase dialog */}
 
             <Dialog fullScreen open={phaseOpen} onClose={closePhase} TransitionComponent={Transition}
-                sx={{ overflow: 'auto' }}
+
             >
                 <AppBar sx={{ position: 'relative' }}>
                     <Toolbar>
@@ -994,7 +995,7 @@ export default function PaginationTable() {
                         </Button>
                     </Toolbar>
                 </AppBar>
-                <SimpleCard sx={{ overflow: 'auto' }}>
+                <SimpleCard>
                     <TableContainer sx={{ maxHeight: 780, overflow: 'auto' }}>
                         <StyledTable1 stickyHeader aria-label="sticky table" >
                             <TableHead>
