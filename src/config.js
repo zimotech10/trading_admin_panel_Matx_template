@@ -1,2 +1,2 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'http://192.168.11.22:8001';
+axios.defaults.baseURL = 'https://new-admin.nowtradefunded.com/login';
